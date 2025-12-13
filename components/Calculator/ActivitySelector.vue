@@ -12,95 +12,75 @@ withDefaults(defineProps<Props>(), {
 
 const modelValue = defineModel<ActivityLevel>({ required: true })
 
-const activityOptions: { value: ActivityLevel; name: string; description: string }[] = [
-  { value: 'sedentary', name: 'Sedentary', description: 'Little or no exercise, desk job' },
-  { value: 'light', name: 'Lightly Active', description: 'Light exercise 1-3 days/week' },
-  { value: 'moderate', name: 'Moderately Active', description: 'Moderate exercise 3-5 days/week' },
-  { value: 'active', name: 'Very Active', description: 'Hard exercise 6-7 days/week' },
-  { value: 'athlete', name: 'Athlete', description: 'Very hard training, physical job' },
+const activityOptions: { value: ActivityLevel; name: string; multiplier: string }[] = [
+  { value: 'sedentary', name: 'SEDENTARY', multiplier: '1.2x' },
+  { value: 'light', name: 'LIGHT', multiplier: '1.375x' },
+  { value: 'moderate', name: 'MODERATE', multiplier: '1.55x' },
+  { value: 'active', name: 'VERY ACTIVE', multiplier: '1.725x' },
+  { value: 'athlete', name: 'ATHLETE', multiplier: '1.9x' },
 ]
 
-const colorClasses: Record<CalculatorColor, { selected: string; border: string; radio: string }> = {
-  purple: {
-    selected: 'border-purple-500 bg-purple-50',
-    border: 'hover:border-purple-200',
-    radio: 'border-purple-500 bg-purple-500',
-  },
-  orange: {
-    selected: 'border-orange-500 bg-orange-50',
-    border: 'hover:border-orange-200',
-    radio: 'border-orange-500 bg-orange-500',
-  },
-  blue: {
-    selected: 'border-blue-500 bg-blue-50',
-    border: 'hover:border-blue-200',
-    radio: 'border-blue-500 bg-blue-500',
-  },
-  teal: {
-    selected: 'border-teal-500 bg-teal-50',
-    border: 'hover:border-teal-200',
-    radio: 'border-teal-500 bg-teal-500',
-  },
-  pink: {
-    selected: 'border-pink-500 bg-pink-50',
-    border: 'hover:border-pink-200',
-    radio: 'border-pink-500 bg-pink-500',
-  },
-  red: {
-    selected: 'border-red-500 bg-red-50',
-    border: 'hover:border-red-200',
-    radio: 'border-red-500 bg-red-500',
-  },
-  green: {
-    selected: 'border-green-500 bg-green-50',
-    border: 'hover:border-green-200',
-    radio: 'border-green-500 bg-green-500',
-  },
-  cyan: {
-    selected: 'border-cyan-500 bg-cyan-50',
-    border: 'hover:border-cyan-200',
-    radio: 'border-cyan-500 bg-cyan-500',
-  },
-  amber: {
-    selected: 'border-amber-500 bg-amber-50',
-    border: 'hover:border-amber-200',
-    radio: 'border-amber-500 bg-amber-500',
-  },
+const colorClasses: Record<CalculatorColor, { active: string; activeBg: string; border: string }> = {
+  purple: { active: 'border-purple-500', activeBg: 'bg-purple-500', border: 'border-purple-300' },
+  orange: { active: 'border-orange-500', activeBg: 'bg-orange-500', border: 'border-orange-300' },
+  blue: { active: 'border-blue-500', activeBg: 'bg-blue-500', border: 'border-blue-300' },
+  teal: { active: 'border-teal-500', activeBg: 'bg-teal-500', border: 'border-teal-300' },
+  pink: { active: 'border-pink-500', activeBg: 'bg-pink-500', border: 'border-pink-300' },
+  red: { active: 'border-red-500', activeBg: 'bg-red-500', border: 'border-red-300' },
+  green: { active: 'border-green-500', activeBg: 'bg-green-500', border: 'border-green-300' },
+  cyan: { active: 'border-cyan-500', activeBg: 'bg-cyan-500', border: 'border-cyan-300' },
+  amber: { active: 'border-amber-500', activeBg: 'bg-amber-500', border: 'border-amber-300' },
 }
 
-// Fallback for safety
 const getColorClasses = (color: CalculatorColor) => colorClasses[color] || colorClasses.blue
 </script>
 
 <template>
-  <div class="space-y-2">
-    <label class="text-sm font-medium text-gray-700">Activity Level</label>
-    <div class="grid gap-2">
+  <div class="space-y-4">
+    <label class="font-pixel text-xs sm:text-sm text-gray-700 tracking-wide">ACTIVITY LEVEL</label>
+    <div class="space-y-2">
       <button
         v-for="option in activityOptions"
         :key="option.value"
         type="button"
-        class="flex items-center justify-between p-3 rounded-xl border-2 transition-all duration-150 text-left"
-        :class="[
-          modelValue === option.value
-            ? getColorClasses(color).selected
-            : `border-gray-200 ${getColorClasses(color).border}`
-        ]"
+        class="relative w-full p-3 border-2 bg-white text-left flex items-center justify-between"
+        :class="modelValue === option.value ? getColorClasses(color).active : 'border-gray-200 hover:border-gray-300'"
         @click="modelValue = option.value"
       >
-        <div>
-          <p class="font-medium text-gray-900 text-sm">{{ option.name }}</p>
-          <p class="text-xs text-gray-500">{{ option.description }}</p>
-        </div>
+        <!-- Left indicator bar when selected -->
         <div
-          class="w-5 h-5 rounded-full border-2 flex items-center justify-center"
-          :class="modelValue === option.value ? getColorClasses(color).radio.split(' ')[0] : 'border-gray-300'"
-        >
+          v-if="modelValue === option.value"
+          class="absolute left-0 top-0 bottom-0 w-1"
+          :class="getColorClasses(color).activeBg"
+        />
+
+        <div class="flex items-center gap-3 pl-2">
+          <!-- Radio indicator -->
           <div
-            v-if="modelValue === option.value"
-            class="w-3 h-3 rounded-full"
-            :class="getColorClasses(color).radio.split(' ')[1]"
-          />
+            class="w-4 h-4 border-2 flex items-center justify-center"
+            :class="modelValue === option.value ? getColorClasses(color).active : 'border-gray-300'"
+          >
+            <div
+              v-if="modelValue === option.value"
+              class="w-2 h-2"
+              :class="getColorClasses(color).activeBg"
+            />
+          </div>
+
+          <span
+            class="font-pixel text-xs sm:text-sm tracking-wide"
+            :class="modelValue === option.value ? 'text-gray-800' : 'text-gray-500'"
+          >
+            {{ option.name }}
+          </span>
+        </div>
+
+        <!-- Multiplier badge -->
+        <div
+          class="px-2 py-1 font-game text-xs sm:text-sm"
+          :class="modelValue === option.value ? 'bg-gray-100 text-gray-700' : 'bg-gray-50 text-gray-400'"
+        >
+          {{ option.multiplier }}
         </div>
       </button>
     </div>

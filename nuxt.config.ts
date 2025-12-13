@@ -1,62 +1,62 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  // SSG mode - pre-render all pages at build time
-  ssr: true,
-  nitro: {
-    prerender: {
-      crawlLinks: true,
-      routes: ['/', '/sitemap.xml'],
-    },
-  },
+	// SSG mode - pre-render all pages at build time
+	ssr: true,
+	nitro: {
+		prerender: {
+			crawlLinks: true,
+			routes: ["/", "/sitemap.xml"],
+		},
+	},
 
-  // Global CSS
-  css: ['~/assets/css/fonts.css'],
+	// Global CSS (fonts loaded via main.css)
+	css: [],
 
-  // Modules
-  modules: [
-    '@nuxtjs/tailwindcss',
-    '@nuxt/eslint',
-    '@nuxtjs/sitemap',
-  ],
+	// Modules
+	modules: ["@nuxtjs/tailwindcss", "@nuxt/eslint", "@nuxtjs/sitemap"],
 
-  // App configuration
-  app: {
-    head: {
-      htmlAttrs: {
-        lang: 'en',
-      },
-      charset: 'utf-8',
-      viewport: 'width=device-width, initial-scale=1',
-      link: [
-        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
-        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap' },
-      ],
-    },
-  },
+	// Tailwind configuration
+	tailwindcss: {
+		configPath: "tailwind.config.ts",
+		cssPath: "~/assets/css/main.css",
+		exposeConfig: true,
+	},
 
-  // Sitemap configuration
-  site: {
-    url: 'https://dietwoi.com',
-    name: 'Dietwoi - Health Calculators',
-  },
+	// App configuration
+	app: {
+		head: {
+			htmlAttrs: {
+				lang: "en",
+			},
+			charset: "utf-8",
+			viewport: "width=device-width, initial-scale=1",
+			link: [
+				{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+			],
+		},
+	},
 
-  // Runtime config
-  runtimeConfig: {
-    public: {
-      siteUrl: 'https://dietwoi.com',
-      siteName: 'Dietwoi',
-    },
-  },
+	// Sitemap configuration
+	site: {
+		url: "https://dietwoi.com",
+		name: "Dietwoi - Health Calculators",
+	},
 
-  // TypeScript
-  typescript: {
-    strict: true,
-  },
+	// Runtime config
+	runtimeConfig: {
+		public: {
+			siteUrl: "https://dietwoi.com",
+			siteName: "Dietwoi",
+		},
+	},
 
-  // Development tools
-  devtools: { enabled: true },
+	// TypeScript
+	typescript: {
+		strict: true,
+	},
 
-  compatibilityDate: '2024-12-13',
-})
+	// Development tools
+	devtools: { enabled: true },
+
+	compatibilityDate: "2024-12-13",
+});

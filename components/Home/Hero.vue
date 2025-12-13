@@ -358,7 +358,7 @@ const setFloatingRef = (el: any) => {
 <template>
 	<section
 		ref="heroRef"
-		class="relative min-h-[100svh] overflow-hidden bg-[#0a0a1a] transition-opacity duration-500"
+		class="relative min-h-screen-safe overflow-hidden bg-[#0a0a1a] transition-opacity duration-500"
 		:class="isReady ? 'opacity-100' : 'opacity-0'">
 		<!-- Animated Gradient Mesh Background -->
 		<div class="absolute inset-0">
@@ -639,7 +639,7 @@ const setFloatingRef = (el: any) => {
 
 		<!-- Main Content -->
 		<div
-			class="relative z-10 min-h-[100svh] flex items-center justify-center px-4 py-20">
+			class="relative z-10 min-h-screen-safe flex items-center justify-center px-4 py-20">
 			<div class="max-w-4xl mx-auto text-center">
 				<!-- Main Headline -->
 				<h1 class="font-pixel mb-6 relative">

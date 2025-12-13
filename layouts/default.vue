@@ -1,33 +1,82 @@
 <script setup lang="ts">
-import { footerNav, headerNav } from "~/config/navigation";
+import { footerCategories, headerNav } from "~/config/navigation";
 
+const WEB_NAME = "CALCULATOR";
 const route = useRoute();
 const mobileMenuOpen = ref(false);
 const scrolled = ref(false);
+// Start hidden on homepage, visible on other pages
 const navVisible = ref(false);
+const lastScrollY = ref(0);
+const heroThreshold = ref(0);
 
-// Handle scroll behavior
+// Handle scroll behavior - show on scroll up, hide on scroll down
 const handleScroll = () => {
 	if (typeof window === "undefined") return;
 
 	const scrollY = window.scrollY;
 	scrolled.value = scrollY > 50;
 
-	// Show nav after scrolling past hero (100vh)
+	// Calculate hero threshold (30% of viewport height)
+	heroThreshold.value = window.innerHeight * 0.3;
+
+	// On homepage: only start showing/hiding after passing hero section
 	if (route.path === "/") {
-		navVisible.value = scrollY > window.innerHeight * 0.3;
+		if (scrollY <= heroThreshold.value) {
+			// Still in hero section - hide navbar
+			navVisible.value = false;
+		} else {
+			// Past hero - show on scroll up, hide on scroll down
+			const scrollingUp = scrollY < lastScrollY.value;
+			const scrollDelta = Math.abs(scrollY - lastScrollY.value);
+
+			// Only react to significant scroll (>5px) to avoid jitter
+			if (scrollDelta > 5) {
+				navVisible.value = scrollingUp || scrollY <= heroThreshold.value;
+			}
+		}
 	} else {
-		navVisible.value = true;
+		// Non-home pages: show on scroll up, hide on scroll down
+		const scrollingUp = scrollY < lastScrollY.value;
+		const scrollDelta = Math.abs(scrollY - lastScrollY.value);
+
+		if (scrollDelta > 5) {
+			navVisible.value = scrollingUp || scrollY <= 50;
+		}
 	}
+
+	lastScrollY.value = scrollY;
 };
 
 // Initialize on mount
 onMounted(() => {
-	// Set initial state for non-home pages
-	if (route.path !== "/") {
-		navVisible.value = true;
+	if (typeof window !== "undefined") {
+		lastScrollY.value = window.scrollY;
+
+		// Set initial state
+		if (route.path !== "/") {
+			navVisible.value = window.scrollY <= 50;
+		} else {
+			navVisible.value = window.scrollY <= window.innerHeight * 0.3 ? false : true;
+		}
 	}
-	handleScroll();
+
+	// Handle scroll position restoration after page reload
+	requestAnimationFrame(() => {
+		if (typeof window !== "undefined") {
+			lastScrollY.value = window.scrollY;
+			// Show navbar if at top or scrolled up position
+			if (route.path !== "/") {
+				navVisible.value = true;
+			}
+		}
+	});
+	setTimeout(() => {
+		if (typeof window !== "undefined" && route.path !== "/") {
+			navVisible.value = true;
+		}
+	}, 100);
+
 	window.addEventListener("scroll", handleScroll, { passive: true });
 });
 
@@ -37,7 +86,7 @@ onUnmounted(() => {
 	}
 });
 
-// Always show nav on non-home pages
+// Handle route changes
 watch(
 	() => route.path,
 	(newPath) => {
@@ -45,11 +94,20 @@ watch(
 		if (newPath !== "/") {
 			navVisible.value = true;
 		} else {
-			handleScroll();
+			// Homepage: keep hidden until scrolled past hero
+			if (typeof window !== "undefined") {
+				lastScrollY.value = window.scrollY;
+				navVisible.value = window.scrollY > window.innerHeight * 0.3;
+			} else {
+				navVisible.value = false;
+			}
 		}
 	},
 	{ immediate: true }
 );
+
+// Provide navVisible state to child components
+provide("navVisible", navVisible);
 </script>
 
 <template>
@@ -70,20 +128,25 @@ watch(
 					<!-- Logo -->
 					<NuxtLink to="/" class="flex items-center gap-3 group">
 						<div
-							class="relative w-10 h-10 bg-gradient-to-br from-green-400 to-cyan-500 rounded-lg flex items-center justify-center overflow-hidden">
-							<div
-								class="absolute inset-0 bg-gradient-to-br from-green-400 to-cyan-500 group-hover:scale-110 transition-transform duration-300" />
-							<span class="relative font-pixel text-black text-sm">D</span>
+							class="relative w-9 h-9 border-2 border-green-400 bg-green-500/20 flex items-center justify-center group-hover:bg-green-500/30 transition-colors">
+							<svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="text-green-400">
+								<!-- Calculator body -->
+								<rect x="2" y="1" width="12" height="14" fill="currentColor" />
+								<!-- Screen -->
+								<rect x="4" y="3" width="8" height="3" fill="#0a0a1a" />
+								<!-- Buttons row 1 -->
+								<rect x="4" y="8" width="2" height="2" fill="#0a0a1a" />
+								<rect x="7" y="8" width="2" height="2" fill="#0a0a1a" />
+								<rect x="10" y="8" width="2" height="2" fill="#0a0a1a" />
+								<!-- Buttons row 2 -->
+								<rect x="4" y="11" width="2" height="2" fill="#0a0a1a" />
+								<rect x="7" y="11" width="2" height="2" fill="#0a0a1a" />
+								<rect x="10" y="11" width="2" height="2" fill="#0a0a1a" />
+							</svg>
 						</div>
-						<div class="flex flex-col">
-							<span class="font-pixel text-sm text-white tracking-wider"
-								>CALCULATOR</span
-							>
-							<span
-								class="font-retro text-[8px] text-green-400/60 tracking-widest"
-								>HEALTH METRICS</span
-							>
-						</div>
+						<span class="font-pixel text-sm text-white tracking-wider">{{
+							WEB_NAME
+						}}</span>
 					</NuxtLink>
 
 					<!-- Desktop Navigation -->
@@ -192,94 +255,54 @@ watch(
 		</main>
 
 		<!-- Footer -->
-		<footer
-			class="relative bg-[#050510] text-gray-400 border-t border-green-500/10">
-			<!-- Grid pattern -->
-			<div class="absolute inset-0 opacity-[0.02]">
-				<svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-					<defs>
-						<pattern
-							id="footer-grid"
-							width="32"
-							height="32"
-							patternUnits="userSpaceOnUse">
-							<path
-								d="M 32 0 L 0 0 0 32"
-								fill="none"
-								stroke="#22c55e"
-								stroke-width="0.5" />
-						</pattern>
-					</defs>
-					<rect width="100%" height="100%" fill="url(#footer-grid)" />
-				</svg>
-			</div>
-
-			<div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-				<div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-					<!-- Brand -->
-					<div class="col-span-2 md:col-span-1">
-						<div class="flex items-center gap-3 mb-6">
-							<div
-								class="w-10 h-10 bg-gradient-to-br from-green-400 to-cyan-500 rounded-lg flex items-center justify-center">
-								<span class="font-pixel text-black text-sm">D</span>
-							</div>
-							<div class="flex flex-col">
-								<span class="font-pixel text-sm text-white tracking-wider"
-									>DIETWOI</span
-								>
-								<span
-									class="font-retro text-[8px] text-green-400/60 tracking-widest"
-									>v1.0</span
-								>
-							</div>
-						</div>
-						<p class="font-retro text-xs leading-relaxed text-gray-500">
-							Free health calculators to help you understand your body and make
-							informed decisions.
-						</p>
-					</div>
-
-					<!-- Footer Sections -->
-					<div v-for="section in footerNav" :key="section.title">
+		<footer class="bg-[#050510] text-gray-400 border-t border-green-500/10">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+				<!-- Categories Grid -->
+				<div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+					<div v-for="category in footerCategories" :key="category.title">
 						<h3
-							class="font-pixel text-[10px] text-green-400 mb-4 tracking-widest">
-							{{ section.title.toUpperCase() }}
+							class="font-pixel text-[10px] text-green-400 mb-3 tracking-widest">
+							{{ category.title }}
 						</h3>
-						<ul class="space-y-3">
-							<li v-for="item in section.items" :key="item.name">
+						<ul class="space-y-2">
+							<li v-for="item in category.items" :key="item.name">
 								<NuxtLink
-									v-if="item.path !== '#'"
 									:to="item.path"
-									class="font-retro text-xs text-gray-500 hover:text-green-400 transition-colors">
+									class="font-game text-sm text-gray-500 hover:text-green-400 transition-colors">
 									{{ item.name }}
 								</NuxtLink>
-								<span v-else class="font-retro text-xs text-gray-600">{{
-									item.name
-								}}</span>
 							</li>
 						</ul>
 					</div>
 				</div>
 
-				<div class="border-t border-green-500/10 mt-12 pt-8">
-					<div
-						class="flex flex-col md:flex-row justify-between items-center gap-4">
-						<p class="font-retro text-[10px] text-gray-600">
-							&copy; {{ new Date().getFullYear() }} DIETWOI. ALL RIGHTS
-							RESERVED.
-						</p>
-						<p
-							class="font-retro text-[10px] text-gray-700 text-center md:text-right max-w-md">
-							Calculations are for informational purposes only. Consult a
-							healthcare professional for medical advice.
-						</p>
+				<!-- Bottom -->
+				<div
+					class="border-t border-green-500/10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
+					<div class="flex items-center gap-2">
+						<div
+							class="w-6 h-6 border border-green-500/50 flex items-center justify-center">
+							<svg width="12" height="12" viewBox="0 0 16 16" fill="none" class="text-green-400">
+							<rect x="2" y="1" width="12" height="14" fill="currentColor" />
+							<rect x="4" y="3" width="8" height="3" fill="#050510" />
+							<rect x="4" y="8" width="2" height="2" fill="#050510" />
+							<rect x="7" y="8" width="2" height="2" fill="#050510" />
+							<rect x="10" y="8" width="2" height="2" fill="#050510" />
+							<rect x="4" y="11" width="2" height="2" fill="#050510" />
+							<rect x="7" y="11" width="2" height="2" fill="#050510" />
+							<rect x="10" y="11" width="2" height="2" fill="#050510" />
+						</svg>
+						</div>
+						<span class="font-pixel text-[10px] text-gray-500">{{
+							WEB_NAME
+						}}</span>
 					</div>
+					<p class="font-game text-xs text-gray-600 text-center">
+						&copy; {{ new Date().getFullYear() }} Dietwoi. For informational
+						purposes only.
+					</p>
 				</div>
 			</div>
-
-			<!-- Bottom accent line -->
-			<div
-				class="h-1 bg-gradient-to-r from-green-500 via-cyan-500 to-purple-500" />
 		</footer>
 	</div>
 </template>
