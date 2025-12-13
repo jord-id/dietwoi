@@ -107,13 +107,29 @@ const weightStatus = computed(() => {
     </template>
 
     <template #reference>
-      <div class="mt-8">
-        <h3 class="text-sm font-medium text-gray-700 mb-3">Formula Reference</h3>
-        <div class="space-y-2 text-sm text-gray-600">
-          <p><strong>Devine (1974):</strong> Most widely used, developed for drug dosing</p>
-          <p><strong>Robinson (1983):</strong> Refinement of Devine formula</p>
-          <p><strong>Miller (1983):</strong> Based on mortality data</p>
-          <p><strong>Hamwi (1964):</strong> Quick estimation method</p>
+      <div class="mt-10">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-3 h-3 bg-amber-500" />
+          <span class="font-pixel text-xs sm:text-sm tracking-wider text-gray-800">FORMULA REFERENCE</span>
+          <div class="flex-1 h-px bg-gray-200" />
+        </div>
+        <div class="space-y-2">
+          <div class="relative p-3 border-2 border-amber-200 bg-white">
+            <div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500" />
+            <p class="pl-2 font-game text-sm sm:text-base text-gray-600"><strong class="text-amber-700">Devine (1974):</strong> Most widely used, developed for drug dosing</p>
+          </div>
+          <div class="relative p-3 border-2 border-amber-200 bg-white">
+            <div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500" />
+            <p class="pl-2 font-game text-sm sm:text-base text-gray-600"><strong class="text-amber-700">Robinson (1983):</strong> Refinement of Devine formula</p>
+          </div>
+          <div class="relative p-3 border-2 border-amber-200 bg-white">
+            <div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500" />
+            <p class="pl-2 font-game text-sm sm:text-base text-gray-600"><strong class="text-amber-700">Miller (1983):</strong> Based on mortality data</p>
+          </div>
+          <div class="relative p-3 border-2 border-amber-200 bg-white">
+            <div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500" />
+            <p class="pl-2 font-game text-sm sm:text-base text-gray-600"><strong class="text-amber-700">Hamwi (1964):</strong> Quick estimation method</p>
+          </div>
         </div>
       </div>
     </template>
@@ -121,20 +137,25 @@ const weightStatus = computed(() => {
     <template #results>
       <div v-if="result" class="space-y-6">
         <!-- Average Ideal Weight -->
-        <div class="text-center p-6 rounded-2xl bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-100">
-          <p class="text-sm text-gray-500 mb-2">Average Ideal Weight</p>
+        <div class="relative text-center p-6 border-2 border-amber-200 bg-white">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-yellow-500" />
+          <p class="font-pixel text-[10px] sm:text-xs text-gray-500 mb-2 tracking-wide">AVERAGE IDEAL WEIGHT</p>
           <div class="flex items-baseline justify-center gap-2">
-            <span class="text-5xl font-bold bg-gradient-to-r from-amber-500 to-yellow-500 bg-clip-text text-transparent">
+            <span class="font-game text-5xl sm:text-6xl font-bold bg-gradient-to-r from-amber-500 to-yellow-500 bg-clip-text text-transparent">
               {{ average }}
             </span>
-            <span class="text-2xl text-gray-600">kg</span>
+            <span class="font-game text-xl text-gray-600">kg</span>
           </div>
-          <p class="mt-2 text-xs text-gray-500">Based on 4 medical formulas</p>
+          <p class="mt-2 font-game text-xs text-gray-500">Based on 4 medical formulas</p>
         </div>
 
         <!-- Individual Formulas -->
         <div>
-          <h3 class="text-sm font-medium text-gray-700 mb-3">Individual Formulas</h3>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-3 h-3 bg-amber-500" />
+            <span class="font-pixel text-xs sm:text-sm tracking-wider text-gray-800">INDIVIDUAL FORMULAS</span>
+            <div class="flex-1 h-px bg-gray-200" />
+          </div>
           <div class="grid grid-cols-2 gap-3">
             <CalculatorResultCard
               v-for="formula in formulas"
@@ -142,89 +163,77 @@ const weightStatus = computed(() => {
               :title="formula.label"
               :value="result[formula.key as keyof typeof result] as number"
               unit="kg"
-              :color="formula.color"
+              color="amber"
               size="sm"
             />
           </div>
         </div>
 
         <!-- Healthy BMI Range -->
-        <div class="p-4 bg-green-50 rounded-xl border border-green-100">
-          <p class="text-sm font-medium text-green-700 mb-1">Healthy BMI Weight Range</p>
-          <p class="text-sm text-gray-600">
+        <div class="relative p-4 border-2 border-amber-200 bg-white">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-amber-500" />
+          <p class="font-pixel text-[10px] sm:text-xs text-amber-700 mb-1 tracking-wide">HEALTHY BMI WEIGHT RANGE</p>
+          <p class="font-game text-sm text-gray-600">
             For your height ({{ inputs.height }}cm), a healthy weight (BMI 18.5-24.9) is:
           </p>
-          <p class="text-lg font-semibold text-green-700 mt-1">
+          <p class="font-game text-lg sm:text-xl font-semibold text-amber-700 mt-1">
             {{ result.bmiRange.min }} - {{ result.bmiRange.max }} kg
           </p>
         </div>
 
         <!-- Current Weight Comparison -->
-        <div v-if="showComparison" class="p-4 rounded-xl border" :class="weightDifference === 0 ? 'bg-green-50 border-green-100' : 'bg-blue-50 border-blue-100'">
-          <p class="text-sm font-medium mb-1" :class="weightStatus.color">
+        <div v-if="showComparison" class="relative p-4 border-2 border-amber-200 bg-white">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-amber-500" />
+          <p class="font-game text-sm font-medium mb-1" :class="weightStatus.color">
             You are {{ Math.abs(weightDifference) }}kg {{ weightStatus.label }} average ideal weight
           </p>
           <div class="flex items-center gap-2 mt-2">
-            <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div class="flex-1 h-3 bg-gray-200 border border-gray-300">
               <div
-                class="h-full bg-gradient-to-r from-amber-400 to-yellow-400 transition-all duration-500"
+                class="h-full bg-amber-500"
                 :style="{ width: `${Math.min((average / (inputs.currentWeight as number)) * 100, 100)}%` }"
               />
             </div>
           </div>
-          <div class="flex justify-between text-xs text-gray-500 mt-1">
+          <div class="flex justify-between font-game text-xs text-gray-500 mt-1">
             <span>Current: {{ inputs.currentWeight }}kg</span>
             <span>Ideal: {{ average }}kg</span>
           </div>
         </div>
 
         <!-- Formula Range -->
-        <div class="text-center text-sm text-gray-500">
+        <div class="text-center font-game text-sm text-gray-500">
           <p>Formula range: {{ Math.min(result.devine, result.robinson, result.miller, result.hamwi) }}kg - {{ Math.max(result.devine, result.robinson, result.miller, result.hamwi) }}kg</p>
         </div>
       </div>
     </template>
 
     <template #info>
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">About Ideal Weight</h2>
-      <div class="prose prose-gray max-w-none">
-        <p>This calculator uses four established medical formulas to estimate ideal body weight. Each formula was developed for different purposes and may give slightly different results.</p>
+      <h2 class="font-pixel text-base sm:text-lg text-gray-900 mb-4 tracking-wide">ABOUT IDEAL WEIGHT</h2>
+      <div class="space-y-6">
+        <p class="font-game text-base sm:text-lg text-gray-600 leading-relaxed">This calculator uses four established medical formulas to estimate ideal body weight.</p>
 
-        <h3 class="text-lg font-medium mt-4 mb-2">Formulas Used</h3>
-        <div class="space-y-2 text-sm">
-          <div class="bg-gray-50 p-3 rounded-lg">
-            <p class="font-medium">Men:</p>
-            <ul class="list-disc list-inside ml-2 space-y-1 text-gray-600">
-              <li><strong>Devine:</strong> 50 + 2.3 × (height in inches - 60)</li>
-              <li><strong>Robinson:</strong> 52 + 1.9 × (height in inches - 60)</li>
-              <li><strong>Miller:</strong> 56.2 + 1.41 × (height in inches - 60)</li>
-              <li><strong>Hamwi:</strong> 48 + 2.7 × (height in inches - 60)</li>
-            </ul>
-          </div>
-          <div class="bg-gray-50 p-3 rounded-lg">
-            <p class="font-medium">Women:</p>
-            <ul class="list-disc list-inside ml-2 space-y-1 text-gray-600">
-              <li><strong>Devine:</strong> 45.5 + 2.3 × (height in inches - 60)</li>
-              <li><strong>Robinson:</strong> 49 + 1.7 × (height in inches - 60)</li>
-              <li><strong>Miller:</strong> 53.1 + 1.36 × (height in inches - 60)</li>
-              <li><strong>Hamwi:</strong> 45.5 + 2.2 × (height in inches - 60)</li>
-            </ul>
-          </div>
+        <div>
+          <h3 class="font-pixel text-xs sm:text-sm text-gray-800 mb-3 tracking-wide">IMPORTANT LIMITATIONS</h3>
+          <ul class="font-game text-base sm:text-lg text-gray-600 space-y-2">
+            <li class="flex items-start gap-2">
+              <span class="w-2 h-2 bg-amber-500 mt-2 flex-shrink-0" />
+              <span><strong>Frame size:</strong> Doesn't account for bone structure</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-2 h-2 bg-amber-500 mt-2 flex-shrink-0" />
+              <span><strong>Muscle mass:</strong> Athletes may have higher healthy weights</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-2 h-2 bg-amber-500 mt-2 flex-shrink-0" />
+              <span><strong>Age:</strong> Ideal weight varies with age</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-2 h-2 bg-amber-500 mt-2 flex-shrink-0" />
+              <span><strong>Individual:</strong> These are general guidelines</span>
+            </li>
+          </ul>
         </div>
-
-        <h3 class="text-lg font-medium mt-4 mb-2">Important Limitations</h3>
-        <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
-          <li><strong>Frame size:</strong> These formulas don't account for bone structure or body frame</li>
-          <li><strong>Muscle mass:</strong> Athletes and muscular individuals may have healthy weights above these ranges</li>
-          <li><strong>Age:</strong> Ideal weight may vary with age, especially for elderly individuals</li>
-          <li><strong>Ethnicity:</strong> Different populations may have different healthy weight ranges</li>
-          <li><strong>Individual variation:</strong> These are general guidelines, not absolute targets</li>
-        </ul>
-
-        <h3 class="text-lg font-medium mt-4 mb-2">How to Use This Information</h3>
-        <p class="text-sm text-gray-600">
-          Use these results as a general guideline rather than an absolute target. The healthy BMI weight range (18.5-24.9) is often more reliable for general health assessment. Consult with healthcare professionals for personalized weight recommendations based on your overall health, body composition, and medical history.
-        </p>
       </div>
     </template>
   </CalculatorPage>

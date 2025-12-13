@@ -1,39 +1,62 @@
 <script setup lang="ts">
-// Global app configuration
+// Splash screen state
 const showSplash = ref(false)
-const splashComplete = ref(false)
+const contentReady = ref(false)
 
-// Provide splash state to child components
-provide('splashComplete', splashComplete)
-
-// Only show splash on client-side initial load
 onMounted(() => {
-  // Check if this is a fresh page load (not navigation)
-  if (!sessionStorage.getItem('dietwoi-visited')) {
+  const hasVisited = sessionStorage.getItem('dietwoi-visited')
+
+  if (hasVisited) {
+    // Returning visitor: show content immediately
+    contentReady.value = true
+  } else {
+    // First visit: show splash
     showSplash.value = true
     sessionStorage.setItem('dietwoi-visited', 'true')
-  } else {
-    splashComplete.value = true
   }
 })
 
-// Called by SplashScreen when done
+// Called by SplashScreen when animation completes
 const onSplashComplete = () => {
   showSplash.value = false
-  splashComplete.value = true
+  contentReady.value = true
 }
 </script>
 
 <template>
+  <!-- Splash Screen (client-only, first visit) -->
   <ClientOnly>
     <SplashScreen v-if="showSplash" @complete="onSplashComplete" />
   </ClientOnly>
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
+
+  <!-- Main Content -->
+  <div class="app-content" :class="{ 'is-ready': contentReady }">
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+  </div>
 </template>
 
 <style>
+/* Hide content on initial client load until splash check completes */
+.app-content {
+  opacity: 0;
+  background-color: #0a0a1a;
+  min-height: 100vh;
+}
+
+.app-content.is-ready {
+  opacity: 1;
+  transition: opacity 0.5s ease-out;
+}
+
+/* SSR/SSG fallback - show content if no JS (for crawlers) */
+@media (scripting: none) {
+  .app-content {
+    opacity: 1;
+  }
+}
+
 /* Page transitions */
 .page-enter-active,
 .page-leave-active {

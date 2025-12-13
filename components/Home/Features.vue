@@ -35,8 +35,16 @@ const features: Feature[] = [
 ];
 
 const colorMap: Record<string, { bg: string; text: string; border: string }> = {
-	orange: { bg: "bg-orange-500", text: "text-orange-500", border: "border-orange-500" },
-	emerald: { bg: "bg-emerald-500", text: "text-emerald-500", border: "border-emerald-500" },
+	orange: {
+		bg: "bg-orange-500",
+		text: "text-orange-500",
+		border: "border-orange-500",
+	},
+	emerald: {
+		bg: "bg-emerald-500",
+		text: "text-emerald-500",
+		border: "border-emerald-500",
+	},
 	blue: { bg: "bg-blue-500", text: "text-blue-500", border: "border-blue-500" },
 };
 </script>
@@ -66,12 +74,14 @@ const colorMap: Record<string, { bg: string; text: string; border: string }> = {
 				<span class="font-pixel text-xs text-gray-400 tracking-widest">
 					// WHY_CHOOSE_US
 				</span>
-				<h2 class="font-pixel text-2xl sm:text-3xl text-gray-800 mt-4 mb-5 tracking-wider">
+				<h2
+					class="font-pixel text-2xl sm:text-3xl text-gray-800 mt-4 mb-5 tracking-wider">
 					BUILT FOR
 					<span class="text-emerald-500">PRECISION</span>
 				</h2>
-				<p class="font-game text-lg text-gray-500 max-w-xl mx-auto">
-					Our calculators use scientifically validated formulas while keeping your data private.
+				<p class="font-retro text-base text-gray-600 max-w-xl mx-auto">
+					Our calculators use scientifically validated formulas while keeping
+					your data private.
 				</p>
 			</div>
 
@@ -82,10 +92,12 @@ const colorMap: Record<string, { bg: string; text: string; border: string }> = {
 					:key="feature.id"
 					class="group flex items-center gap-6 p-5 bg-gray-50 border-l-4 hover:bg-gray-100 transition-all duration-200"
 					:class="colorMap[feature.color].border">
-
 					<!-- Number -->
-					<div class="flex-shrink-0 w-12 h-12 flex items-center justify-center border-2 border-gray-200 bg-white">
-						<span class="font-pixel text-lg text-gray-400">0{{ index + 1 }}</span>
+					<div
+						class="flex-shrink-0 w-12 h-12 flex items-center justify-center border-2 border-gray-200 bg-white">
+						<span class="font-pixel text-lg text-gray-400"
+							>0{{ index + 1 }}</span
+						>
 					</div>
 
 					<!-- Icon -->
@@ -125,10 +137,12 @@ const colorMap: Record<string, { bg: string; text: string; border: string }> = {
 
 					<!-- Content -->
 					<div class="flex-1 min-w-0">
-						<h3 class="font-pixel text-sm tracking-wider mb-1" :class="colorMap[feature.color].text">
+						<h3
+							class="font-pixel text-sm tracking-wider mb-3"
+							:class="colorMap[feature.color].text">
 							{{ feature.title }}
 						</h3>
-						<p class="font-game text-base text-gray-600">
+						<p class="font-retro text-sm text-gray-600">
 							{{ feature.description }}
 						</p>
 					</div>

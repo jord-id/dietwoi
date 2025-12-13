@@ -126,57 +126,60 @@ const bulkGoals = computed(() =>
     <template #extra-inputs>
       <!-- Goal Selection -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-3">Your Goal</label>
+        <label class="font-pixel text-xs sm:text-sm text-gray-700 tracking-wide mb-3 block">YOUR GOAL</label>
 
         <!-- Weight Loss Goals -->
-        <div class="mb-2">
-          <p class="text-xs text-gray-500 mb-2">Weight Loss</p>
+        <div class="mb-3">
+          <p class="font-pixel text-[10px] text-sky-600 mb-2 tracking-wide">WEIGHT LOSS</p>
           <div class="grid grid-cols-3 gap-2">
             <button
               v-for="goal in lossGoals"
               :key="goal"
-              class="p-3 rounded-xl border-2 transition-all text-center"
+              class="relative p-3 border-2 bg-white text-center"
               :class="selectedGoal === goal
-                ? 'border-amber-400 bg-amber-50 text-amber-700'
-                : 'border-gray-200 hover:border-gray-300 text-gray-600'"
+                ? 'border-sky-500'
+                : 'border-gray-200 hover:border-gray-300'"
               @click="selectedGoal = goal"
             >
-              <span class="block text-sm font-medium">{{ GOALS[goal].label }}</span>
-              <span class="block text-xs text-gray-400 mt-1">{{ GOALS[goal].description }}</span>
+              <div v-if="selectedGoal === goal" class="absolute top-0 left-0 right-0 h-1 bg-sky-500" />
+              <span class="block font-pixel text-[10px] tracking-wide" :class="selectedGoal === goal ? 'text-sky-700' : 'text-gray-600'">{{ GOALS[goal].label.toUpperCase() }}</span>
+              <span class="block font-game text-xs text-gray-400 mt-1">{{ GOALS[goal].description }}</span>
             </button>
           </div>
         </div>
 
         <!-- Maintain -->
-        <div class="mb-2">
-          <p class="text-xs text-gray-500 mb-2">Maintenance</p>
+        <div class="mb-3">
+          <p class="font-pixel text-[10px] text-green-600 mb-2 tracking-wide">MAINTENANCE</p>
           <button
-            class="w-full p-3 rounded-xl border-2 transition-all text-center"
+            class="relative w-full p-3 border-2 bg-white text-center"
             :class="selectedGoal === 'maintain'
-              ? 'border-amber-400 bg-amber-50 text-amber-700'
-              : 'border-gray-200 hover:border-gray-300 text-gray-600'"
+              ? 'border-green-500'
+              : 'border-gray-200 hover:border-gray-300'"
             @click="selectedGoal = 'maintain'"
           >
-            <span class="block text-sm font-medium">{{ GOALS.maintain.label }}</span>
-            <span class="block text-xs text-gray-400 mt-1">{{ GOALS.maintain.description }}</span>
+            <div v-if="selectedGoal === 'maintain'" class="absolute top-0 left-0 right-0 h-1 bg-green-500" />
+            <span class="block font-pixel text-[10px] tracking-wide" :class="selectedGoal === 'maintain' ? 'text-green-700' : 'text-gray-600'">{{ GOALS.maintain.label.toUpperCase() }}</span>
+            <span class="block font-game text-xs text-gray-400 mt-1">{{ GOALS.maintain.description }}</span>
           </button>
         </div>
 
         <!-- Muscle Gain Goals -->
         <div>
-          <p class="text-xs text-gray-500 mb-2">Muscle Gain</p>
+          <p class="font-pixel text-[10px] text-amber-600 mb-2 tracking-wide">MUSCLE GAIN</p>
           <div class="grid grid-cols-2 gap-2">
             <button
               v-for="goal in bulkGoals"
               :key="goal"
-              class="p-3 rounded-xl border-2 transition-all text-center"
+              class="relative p-3 border-2 bg-white text-center"
               :class="selectedGoal === goal
-                ? 'border-amber-400 bg-amber-50 text-amber-700'
-                : 'border-gray-200 hover:border-gray-300 text-gray-600'"
+                ? 'border-amber-500'
+                : 'border-gray-200 hover:border-gray-300'"
               @click="selectedGoal = goal"
             >
-              <span class="block text-sm font-medium">{{ GOALS[goal].label }}</span>
-              <span class="block text-xs text-gray-400 mt-1">{{ GOALS[goal].description }}</span>
+              <div v-if="selectedGoal === goal" class="absolute top-0 left-0 right-0 h-1 bg-amber-500" />
+              <span class="block font-pixel text-[10px] tracking-wide" :class="selectedGoal === goal ? 'text-amber-700' : 'text-gray-600'">{{ GOALS[goal].label.toUpperCase() }}</span>
+              <span class="block font-game text-xs text-gray-400 mt-1">{{ GOALS[goal].description }}</span>
             </button>
           </div>
         </div>
@@ -186,21 +189,23 @@ const bulkGoals = computed(() =>
     <template #results>
       <div class="space-y-6">
         <!-- TDEE Reference -->
-        <div class="p-4 rounded-xl bg-gray-50">
-          <p class="text-xs text-gray-500 mb-1">Your Daily Energy Expenditure (TDEE)</p>
-          <p class="text-2xl font-bold text-gray-800">{{ tdeeResult.tdee.toLocaleString() }} <span class="text-sm text-gray-500">kcal</span></p>
+        <div class="relative p-4 border-2 border-amber-200 bg-white">
+          <div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500" />
+          <p class="pl-2 font-pixel text-[10px] text-gray-500 mb-1 tracking-wide">YOUR DAILY ENERGY EXPENDITURE (TDEE)</p>
+          <p class="pl-2 font-game text-2xl sm:text-3xl font-bold text-amber-700">{{ tdeeResult.tdee.toLocaleString() }} <span class="text-sm text-gray-500">kcal</span></p>
         </div>
 
         <!-- Target Calories -->
-        <div class="text-center p-6 bg-gradient-to-br from-amber-50 to-yellow-50 rounded-2xl">
-          <p class="text-sm text-gray-500 mb-2">Daily Calorie Target</p>
+        <div class="relative text-center p-6 border-2 border-amber-200 bg-white">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-yellow-500" />
+          <p class="font-pixel text-[10px] sm:text-xs text-gray-500 mb-2 tracking-wide">DAILY CALORIE TARGET</p>
           <div class="flex items-baseline justify-center gap-2">
-            <span class="text-5xl font-bold bg-gradient-to-r from-amber-500 to-yellow-500 bg-clip-text text-transparent">
+            <span class="font-game text-5xl sm:text-6xl font-bold bg-gradient-to-r from-amber-500 to-yellow-500 bg-clip-text text-transparent">
               {{ targetCalories.toLocaleString() }}
             </span>
-            <span class="text-gray-500 text-lg">kcal</span>
+            <span class="font-game text-lg text-gray-500">kcal</span>
           </div>
-          <p class="text-sm text-gray-500 mt-2">
+          <p class="font-game text-sm text-gray-500 mt-2">
             <span v-if="currentGoal.calorieAdjust !== 0" class="text-amber-600">
               {{ currentGoal.calorieAdjust > 0 ? '+' : '' }}{{ currentGoal.calorieAdjust }} from TDEE
             </span>
@@ -209,16 +214,16 @@ const bulkGoals = computed(() =>
         </div>
 
         <!-- Safety Warning -->
-        <div v-if="isUnderMinimum" class="p-4 rounded-xl bg-red-50 border-2 border-red-200">
+        <div v-if="isUnderMinimum" class="relative p-4 border-2 border-red-300 bg-white">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-red-500" />
           <div class="flex items-start gap-3">
             <svg class="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
             </svg>
             <div>
-              <p class="text-sm font-medium text-red-800">Minimum Calorie Warning</p>
-              <p class="text-xs text-red-600 mt-1">
-                Your target is below the safe minimum of {{ MIN_CALORIES[inputs.gender as 'male' | 'female'] }} kcal for {{ inputs.gender === 'male' ? 'men' : 'women' }}.
-                Calorie intake has been adjusted to safe minimum. Consider a smaller deficit.
+              <p class="font-pixel text-[10px] sm:text-xs text-red-800 tracking-wide">MINIMUM CALORIE WARNING</p>
+              <p class="font-game text-sm text-red-600 mt-1">
+                Target is below safe minimum of {{ MIN_CALORIES[inputs.gender as 'male' | 'female'] }} kcal. Consider a smaller deficit.
               </p>
             </div>
           </div>
@@ -226,68 +231,92 @@ const bulkGoals = computed(() =>
 
         <!-- Weight Change Projection -->
         <div v-if="weeklyWeightChange !== 0">
-          <h3 class="text-sm font-medium text-gray-700 mb-3">Projected Weight Change</h3>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-3 h-3 bg-amber-500" />
+            <span class="font-pixel text-xs sm:text-sm tracking-wider text-gray-800">PROJECTED WEIGHT CHANGE</span>
+            <div class="flex-1 h-px bg-gray-200" />
+          </div>
           <div class="grid grid-cols-2 gap-3">
-            <div class="p-4 rounded-xl bg-gradient-to-br from-amber-50 to-yellow-50 text-center">
-              <p class="text-xs text-gray-500 mb-1">Per Week</p>
-              <p class="text-2xl font-bold" :class="weeklyWeightChange < 0 ? 'text-green-600' : 'text-orange-600'">
+            <div class="relative p-4 border-2 border-amber-200 bg-white text-center">
+              <div class="absolute top-0 left-0 right-0 h-1 bg-amber-500" />
+              <p class="font-pixel text-[10px] text-gray-500 mb-1 tracking-wide">PER WEEK</p>
+              <p class="font-game text-2xl sm:text-3xl font-bold text-amber-700">
                 {{ weeklyWeightChange > 0 ? '+' : '' }}{{ weeklyWeightChange }} kg
               </p>
             </div>
-            <div class="p-4 rounded-xl bg-gradient-to-br from-yellow-50 to-orange-50 text-center">
-              <p class="text-xs text-gray-500 mb-1">Per Month</p>
-              <p class="text-2xl font-bold" :class="monthlyWeightChange < 0 ? 'text-green-600' : 'text-orange-600'">
+            <div class="relative p-4 border-2 border-amber-200 bg-white text-center">
+              <div class="absolute top-0 left-0 right-0 h-1 bg-amber-500" />
+              <p class="font-pixel text-[10px] text-gray-500 mb-1 tracking-wide">PER MONTH</p>
+              <p class="font-game text-2xl sm:text-3xl font-bold text-amber-700">
                 {{ monthlyWeightChange > 0 ? '+' : '' }}{{ monthlyWeightChange }} kg
               </p>
             </div>
           </div>
-          <p class="text-xs text-gray-500 mt-2 text-center">Based on 1 kg = 7,700 calories</p>
+          <p class="font-game text-xs text-gray-500 mt-2 text-center">Based on 1 kg = 7,700 calories</p>
         </div>
 
         <!-- Quick Tips -->
-        <div class="p-4 rounded-xl bg-blue-50">
-          <h3 class="text-sm font-medium text-blue-900 mb-2">Quick Tips</h3>
-          <ul class="text-xs text-blue-700 space-y-1">
-            <li v-if="currentGoal.category === 'loss'">• Aim for 0.5-1% body weight loss per week for sustainable results</li>
-            <li v-if="currentGoal.category === 'loss'">• Higher protein intake (1.6-2.2g/kg) helps preserve muscle mass</li>
-            <li v-if="currentGoal.category === 'bulk'">• Slow, controlled weight gain minimizes fat accumulation</li>
-            <li v-if="currentGoal.category === 'bulk'">• Track weekly averages, not daily fluctuations</li>
-            <li>• Adjust calories based on your actual progress over 2-4 weeks</li>
+        <div class="relative p-4 border-2 border-amber-200 bg-white">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-amber-500" />
+          <h3 class="font-pixel text-[10px] sm:text-xs text-amber-800 mb-2 tracking-wide">QUICK TIPS</h3>
+          <ul class="font-game text-sm text-amber-700 space-y-1">
+            <li v-if="currentGoal.category === 'loss'" class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 bg-amber-500 mt-1.5 flex-shrink-0" />
+              <span>Aim for 0.5-1% body weight loss per week</span>
+            </li>
+            <li v-if="currentGoal.category === 'bulk'" class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 bg-amber-500 mt-1.5 flex-shrink-0" />
+              <span>Slow, controlled weight gain minimizes fat</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 bg-amber-500 mt-1.5 flex-shrink-0" />
+              <span>Adjust calories based on 2-4 week progress</span>
+            </li>
           </ul>
         </div>
       </div>
     </template>
 
     <template #info>
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">About Calorie Targets</h2>
-      <div class="prose prose-gray max-w-none">
-        <p>Your calorie target is based on your TDEE (Total Daily Energy Expenditure) plus or minus an adjustment based on your goal.</p>
+      <h2 class="font-pixel text-base sm:text-lg text-gray-900 mb-4 tracking-wide">ABOUT CALORIE TARGETS</h2>
+      <div class="space-y-6">
+        <p class="font-game text-base sm:text-lg text-gray-600 leading-relaxed">Your calorie target is based on your TDEE plus or minus an adjustment based on your goal.</p>
 
-        <h3 class="text-lg font-medium mt-4 mb-2">How It Works</h3>
-        <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
-          <li><strong>Weight Loss:</strong> Eat below TDEE to create a calorie deficit</li>
-          <li><strong>Maintenance:</strong> Eat at TDEE to maintain current weight</li>
-          <li><strong>Muscle Gain:</strong> Eat above TDEE to provide surplus for growth</li>
-          <li><strong>1 kg body fat ≈ 7,700 calories</strong> of energy stored</li>
-        </ul>
+        <div>
+          <h3 class="font-pixel text-xs sm:text-sm text-gray-800 mb-3 tracking-wide">HOW IT WORKS</h3>
+          <ul class="font-game text-base sm:text-lg text-gray-600 space-y-2">
+            <li class="flex items-start gap-2">
+              <span class="w-2 h-2 bg-amber-500 mt-2 flex-shrink-0" />
+              <span><strong>Weight Loss:</strong> Eat below TDEE</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-2 h-2 bg-amber-500 mt-2 flex-shrink-0" />
+              <span><strong>Maintenance:</strong> Eat at TDEE</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-2 h-2 bg-amber-500 mt-2 flex-shrink-0" />
+              <span><strong>Muscle Gain:</strong> Eat above TDEE</span>
+            </li>
+          </ul>
+        </div>
 
-        <h3 class="text-lg font-medium mt-4 mb-2">Safe Deficit Guidelines</h3>
-        <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
-          <li>Slow cut (-250 cal): ~0.25 kg/week loss, easiest to maintain</li>
-          <li>Moderate cut (-500 cal): ~0.5 kg/week loss, balanced approach</li>
-          <li>Aggressive cut (-750 cal): ~0.75 kg/week loss, harder to sustain</li>
-          <li>Never go below 1200 kcal (women) or 1500 kcal (men) daily</li>
-        </ul>
-
-        <h3 class="text-lg font-medium mt-4 mb-2">Bulking Guidelines</h3>
-        <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
-          <li>Lean bulk (+250 cal): ~0.25 kg/week gain, minimal fat gain</li>
-          <li>Standard bulk (+500 cal): ~0.5 kg/week gain, faster muscle growth</li>
-          <li>Combine with resistance training for best results</li>
-        </ul>
-
-        <h3 class="text-lg font-medium mt-4 mb-2">Important Notes</h3>
-        <p class="text-sm text-gray-600">These are starting estimates. Monitor your actual weight change over 2-4 weeks and adjust calories by 100-200 if progress stalls. Weight fluctuates daily due to water retention, so track weekly averages.</p>
+        <div>
+          <h3 class="font-pixel text-xs sm:text-sm text-gray-800 mb-3 tracking-wide">SAFE GUIDELINES</h3>
+          <ul class="font-game text-base sm:text-lg text-gray-600 space-y-2">
+            <li class="flex items-start gap-2">
+              <span class="w-2 h-2 bg-amber-500 mt-2 flex-shrink-0" />
+              <span>Slow cut: -250 cal (~0.25 kg/week)</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-2 h-2 bg-amber-500 mt-2 flex-shrink-0" />
+              <span>Moderate cut: -500 cal (~0.5 kg/week)</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-2 h-2 bg-amber-500 mt-2 flex-shrink-0" />
+              <span>Never go below 1200 kcal (women) or 1500 kcal (men)</span>
+            </li>
+          </ul>
+        </div>
       </div>
     </template>
   </CalculatorPage>

@@ -67,8 +67,8 @@ const fatPercentage = computed(() => {
     <template #extra-inputs>
       <!-- Optional Body Fat Input -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">
-          Body Fat % (Optional)
+        <label class="font-pixel text-xs sm:text-sm text-gray-700 tracking-wide mb-2 block">
+          BODY FAT % (OPTIONAL)
         </label>
         <div class="flex items-center gap-3">
           <input
@@ -78,19 +78,19 @@ const fatPercentage = computed(() => {
             max="60"
             step="0.1"
             placeholder="e.g. 20"
-            class="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            class="w-24 px-3 py-2.5 border-2 border-green-300 bg-white font-game text-lg text-green-700 focus:outline-none focus:border-green-500"
           >
-          <span class="text-sm text-gray-500">%</span>
+          <span class="font-game text-sm text-gray-500">%</span>
           <button
             v-if="bodyFatInput !== null"
-            class="text-sm text-gray-400 hover:text-gray-600"
+            class="font-game text-sm text-gray-400 hover:text-gray-600"
             @click="bodyFatInput = null"
           >
             Clear
           </button>
         </div>
-        <p class="mt-1 text-xs text-gray-500">
-          If you know your body fat %, enter it for more accurate results
+        <p class="mt-1 font-game text-xs text-gray-500">
+          Enter for more accurate results
         </p>
       </div>
     </template>
@@ -98,31 +98,36 @@ const fatPercentage = computed(() => {
     <template #results>
       <div class="space-y-6">
         <!-- Main Result -->
-        <div class="text-center p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl">
-          <p class="text-sm text-gray-500 mb-2">Your Lean Body Mass</p>
+        <div class="relative text-center p-6 border-2 border-green-200 bg-white">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-500" />
+          <p class="font-pixel text-[10px] sm:text-xs text-gray-500 mb-2 tracking-wide">YOUR LEAN BODY MASS</p>
           <div class="flex items-baseline justify-center gap-2">
-            <span class="text-5xl font-bold bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">
+            <span class="font-game text-5xl sm:text-6xl font-bold bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">
               {{ result.average }}
             </span>
-            <span class="text-gray-500 text-lg">kg</span>
+            <span class="font-game text-lg text-gray-500">kg</span>
           </div>
-          <p class="text-sm text-gray-500 mt-2">
+          <p class="font-game text-sm text-gray-500 mt-2">
             {{ lbmPercentage }}% of total body weight
           </p>
         </div>
 
         <!-- Visual Bar -->
         <div>
-          <h3 class="text-sm font-medium text-gray-700 mb-3">Body Composition</h3>
-          <div class="h-8 rounded-full overflow-hidden flex">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-3 h-3 bg-green-500" />
+            <span class="font-pixel text-xs sm:text-sm tracking-wider text-gray-800">BODY COMPOSITION</span>
+            <div class="flex-1 h-px bg-gray-200" />
+          </div>
+          <div class="h-8 border border-gray-300 flex">
             <div
-              class="bg-green-400 flex items-center justify-center text-sm text-white font-medium"
+              class="bg-green-500 flex items-center justify-center font-game text-sm text-white font-medium"
               :style="{ width: `${lbmPercentage}%` }"
             >
               Lean {{ lbmPercentage }}%
             </div>
             <div
-              class="bg-amber-400 flex items-center justify-center text-sm text-white font-medium"
+              class="bg-green-300 flex items-center justify-center font-game text-sm text-green-800 font-medium"
               :style="{ width: `${fatPercentage}%` }"
             >
               Fat {{ fatPercentage }}%
@@ -132,33 +137,42 @@ const fatPercentage = computed(() => {
 
         <!-- Breakdown -->
         <div class="grid grid-cols-2 gap-4">
-          <div class="p-4 rounded-xl bg-green-50 text-center">
-            <p class="text-xs text-gray-500 mb-1">Lean Mass</p>
-            <p class="text-2xl font-bold text-green-600">{{ result.average }} kg</p>
-            <p class="text-xs text-gray-400">Muscle, bone, organs</p>
+          <div class="relative p-4 border-2 border-green-200 bg-white text-center">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-green-500" />
+            <p class="font-pixel text-[10px] text-gray-500 mb-1 tracking-wide">LEAN MASS</p>
+            <p class="font-game text-2xl sm:text-3xl font-bold text-green-600">{{ result.average }} kg</p>
+            <p class="font-game text-xs text-gray-400">Muscle, bone, organs</p>
           </div>
-          <div class="p-4 rounded-xl bg-amber-50 text-center">
-            <p class="text-xs text-gray-500 mb-1">Fat Mass</p>
-            <p class="text-2xl font-bold text-amber-600">{{ result.fatMass }} kg</p>
-            <p class="text-xs text-gray-400">Body fat</p>
+          <div class="relative p-4 border-2 border-green-200 bg-white text-center">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-green-500" />
+            <p class="font-pixel text-[10px] text-gray-500 mb-1 tracking-wide">FAT MASS</p>
+            <p class="font-game text-2xl sm:text-3xl font-bold text-green-600">{{ result.fatMass }} kg</p>
+            <p class="font-game text-xs text-gray-400">Body fat</p>
           </div>
         </div>
 
         <!-- Formula Results -->
         <div>
-          <h3 class="text-sm font-medium text-gray-700 mb-3">By Formula</h3>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-3 h-3 bg-green-500" />
+            <span class="font-pixel text-xs sm:text-sm tracking-wider text-gray-800">BY FORMULA</span>
+            <div class="flex-1 h-px bg-gray-200" />
+          </div>
           <div class="space-y-2">
-            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-              <span class="text-sm text-gray-600">Boer (1984)</span>
-              <span class="font-semibold text-gray-800">{{ result.boer }} kg</span>
+            <div class="relative flex justify-between items-center p-3 border-2 border-green-200 bg-white">
+              <div class="absolute left-0 top-0 bottom-0 w-1 bg-green-500" />
+              <span class="pl-2 font-game text-sm text-gray-600">Boer (1984)</span>
+              <span class="font-game text-base font-semibold text-green-700">{{ result.boer }} kg</span>
             </div>
-            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-              <span class="text-sm text-gray-600">Hume (1966)</span>
-              <span class="font-semibold text-gray-800">{{ result.hume }} kg</span>
+            <div class="relative flex justify-between items-center p-3 border-2 border-green-200 bg-white">
+              <div class="absolute left-0 top-0 bottom-0 w-1 bg-green-500" />
+              <span class="pl-2 font-game text-sm text-gray-600">Hume (1966)</span>
+              <span class="font-game text-base font-semibold text-green-700">{{ result.hume }} kg</span>
             </div>
-            <div v-if="result.fromBodyFat !== null" class="flex justify-between items-center p-3 bg-green-50 rounded-lg">
-              <span class="text-sm text-gray-600">From Body Fat %</span>
-              <span class="font-semibold text-green-700">{{ result.fromBodyFat }} kg</span>
+            <div v-if="result.fromBodyFat !== null" class="relative flex justify-between items-center p-3 border-2 border-green-200 bg-white">
+              <div class="absolute left-0 top-0 bottom-0 w-1 bg-green-500" />
+              <span class="pl-2 font-game text-sm text-gray-600">From Body Fat %</span>
+              <span class="font-game text-base font-semibold text-green-700">{{ result.fromBodyFat }} kg</span>
             </div>
           </div>
         </div>
@@ -166,26 +180,38 @@ const fatPercentage = computed(() => {
     </template>
 
     <template #info>
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">About Lean Body Mass</h2>
-      <div class="prose prose-gray max-w-none">
-        <p>Lean Body Mass (LBM) is everything in your body except fat: muscles, bones, organs, skin, and water. It's useful for:</p>
-        <ul class="list-disc list-inside text-sm text-gray-600 space-y-1 mt-2">
-          <li>Tracking muscle gain during bulking</li>
-          <li>Monitoring muscle preservation during cutting</li>
-          <li>Calculating protein needs (based on LBM, not total weight)</li>
-          <li>Drug dosing in medical settings</li>
-        </ul>
+      <h2 class="font-pixel text-base sm:text-lg text-gray-900 mb-4 tracking-wide">ABOUT LEAN BODY MASS</h2>
+      <div class="space-y-6">
+        <p class="font-game text-base sm:text-lg text-gray-600 leading-relaxed">Lean Body Mass (LBM) is everything in your body except fat: muscles, bones, organs, skin, and water.</p>
 
-        <h3 class="text-lg font-medium mt-4 mb-2">Formulas Used</h3>
-        <div class="bg-gray-50 p-3 rounded-lg text-sm font-mono space-y-2">
-          <p><strong>Boer:</strong> Men: 0.407×W + 0.267×H - 19.2</p>
-          <p><strong>Hume:</strong> Men: 0.328×W + 0.339×H - 29.5</p>
+        <div>
+          <h3 class="font-pixel text-xs sm:text-sm text-gray-800 mb-3 tracking-wide">USEFUL FOR</h3>
+          <ul class="font-game text-base sm:text-lg text-gray-600 space-y-2">
+            <li class="flex items-start gap-2">
+              <span class="w-2 h-2 bg-green-500 mt-2 flex-shrink-0" />
+              <span>Tracking muscle gain during bulking</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-2 h-2 bg-green-500 mt-2 flex-shrink-0" />
+              <span>Monitoring muscle preservation during cutting</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-2 h-2 bg-green-500 mt-2 flex-shrink-0" />
+              <span>Calculating protein needs (based on LBM)</span>
+            </li>
+          </ul>
         </div>
 
-        <h3 class="text-lg font-medium mt-4 mb-2">Accuracy</h3>
-        <p class="text-sm text-gray-600">
-          These formulas provide estimates with ±5% accuracy. For precise measurements, consider DEXA scans or hydrostatic weighing. If you know your body fat percentage (from a scan or caliper test), enter it above for the most accurate result.
-        </p>
+        <div>
+          <h3 class="font-pixel text-xs sm:text-sm text-gray-800 mb-3 tracking-wide">FORMULAS</h3>
+          <div class="relative p-4 border-2 border-green-200 bg-white">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-green-500" />
+            <div class="font-mono text-sm sm:text-base text-green-700 space-y-1">
+              <p><strong>Boer:</strong> Men: 0.407×W + 0.267×H - 19.2</p>
+              <p><strong>Hume:</strong> Men: 0.328×W + 0.339×H - 29.5</p>
+            </div>
+          </div>
+        </div>
       </div>
     </template>
   </CalculatorPage>

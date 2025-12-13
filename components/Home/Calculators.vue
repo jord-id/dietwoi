@@ -144,7 +144,57 @@ const categories: Category[] = [
 				path: "/protein",
 				color: "text-blue-500",
 				borderColor: "border-blue-200",
-				description: "Calculate optimal protein intake",
+				description: "Calculate optimal protein intake for your goals",
+				comingSoon: true,
+			},
+			{
+				id: "calories-burned",
+				name: "BURN",
+				fullName: "Calories Burned",
+				path: "/calories-burned",
+				color: "text-orange-500",
+				borderColor: "border-orange-200",
+				description: "Calculate calories burned by activity (MET-based)",
+				comingSoon: true,
+			},
+			{
+				id: "heart-rate-zones",
+				name: "HR",
+				fullName: "Heart Rate Zones",
+				path: "/heart-rate-zones",
+				color: "text-red-500",
+				borderColor: "border-red-200",
+				description: "Find your training heart rate zones",
+				comingSoon: true,
+			},
+			{
+				id: "pace-calculator",
+				name: "PACE",
+				fullName: "Pace Calculator",
+				path: "/pace-calculator",
+				color: "text-sky-500",
+				borderColor: "border-sky-200",
+				description: "Convert pace, speed & race predictions",
+				comingSoon: true,
+			},
+			{
+				id: "waist-hip-ratio",
+				name: "WHR",
+				fullName: "Waist-to-Hip Ratio",
+				path: "/waist-hip-ratio",
+				color: "text-violet-500",
+				borderColor: "border-violet-200",
+				description: "Assess cardiovascular health risk",
+				comingSoon: true,
+			},
+			{
+				id: "sleep-calculator",
+				name: "SLEEP",
+				fullName: "Sleep Calculator",
+				path: "/sleep-calculator",
+				color: "text-indigo-500",
+				borderColor: "border-indigo-200",
+				description: "Optimal sleep duration by age",
 				comingSoon: true,
 			},
 		],
@@ -262,7 +312,7 @@ const categories: Category[] = [
 											{{ calc.name }}
 										</h3>
 										<p
-											class="font-retro text-xs text-gray-600 mt-1 tracking-wider">
+											class="font-retro text-xs text-gray-400 mt-1 tracking-wider">
 											{{ calc.fullName }}
 										</p>
 									</div>
@@ -283,7 +333,7 @@ const categories: Category[] = [
 
 								<!-- Description -->
 								<div class="mt-3 flex-grow">
-									<p class="font-game text-sm text-gray-700 leading-relaxed">
+									<p class="font-retro text-xs text-gray-700 leading-relaxed">
 										{{ calc.description }}
 									</p>
 								</div>

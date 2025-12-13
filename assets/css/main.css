@@ -1,3 +1,6 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400..800&family=Jersey+10&family=Jersey+20&family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -45,8 +48,9 @@ html.lenis, html.lenis body {
 
 /* Base styles */
 @layer base {
-  body {
-    @apply antialiased text-gray-900 bg-white;
+  html, body {
+    @apply antialiased;
+    background-color: #0a0a1a;
   }
 }
 
