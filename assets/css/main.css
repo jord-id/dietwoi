@@ -56,6 +56,12 @@ html.lenis, html.lenis body {
 
 /* Custom utilities */
 @layer utilities {
+  /* Safe viewport height with fallback for older browsers */
+  .min-h-screen-safe {
+    min-height: 100vh; /* Fallback for browsers without svh support */
+    min-height: 100svh; /* Modern browsers - accounts for mobile toolbar */
+  }
+
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;

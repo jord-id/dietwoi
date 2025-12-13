@@ -5,30 +5,78 @@ const WEB_NAME = "CALCULATOR";
 const route = useRoute();
 const mobileMenuOpen = ref(false);
 const scrolled = ref(false);
+// Start hidden on homepage, visible on other pages
 const navVisible = ref(false);
+const lastScrollY = ref(0);
+const heroThreshold = ref(0);
 
-// Handle scroll behavior
+// Handle scroll behavior - show on scroll up, hide on scroll down
 const handleScroll = () => {
 	if (typeof window === "undefined") return;
 
 	const scrollY = window.scrollY;
 	scrolled.value = scrollY > 50;
 
-	// Show nav after scrolling past hero (100vh)
+	// Calculate hero threshold (30% of viewport height)
+	heroThreshold.value = window.innerHeight * 0.3;
+
+	// On homepage: only start showing/hiding after passing hero section
 	if (route.path === "/") {
-		navVisible.value = scrollY > window.innerHeight * 0.3;
+		if (scrollY <= heroThreshold.value) {
+			// Still in hero section - hide navbar
+			navVisible.value = false;
+		} else {
+			// Past hero - show on scroll up, hide on scroll down
+			const scrollingUp = scrollY < lastScrollY.value;
+			const scrollDelta = Math.abs(scrollY - lastScrollY.value);
+
+			// Only react to significant scroll (>5px) to avoid jitter
+			if (scrollDelta > 5) {
+				navVisible.value = scrollingUp || scrollY <= heroThreshold.value;
+			}
+		}
 	} else {
-		navVisible.value = true;
+		// Non-home pages: show on scroll up, hide on scroll down
+		const scrollingUp = scrollY < lastScrollY.value;
+		const scrollDelta = Math.abs(scrollY - lastScrollY.value);
+
+		if (scrollDelta > 5) {
+			navVisible.value = scrollingUp || scrollY <= 50;
+		}
 	}
+
+	lastScrollY.value = scrollY;
 };
 
 // Initialize on mount
 onMounted(() => {
-	// Set initial state for non-home pages
-	if (route.path !== "/") {
-		navVisible.value = true;
+	if (typeof window !== "undefined") {
+		lastScrollY.value = window.scrollY;
+
+		// Set initial state
+		if (route.path !== "/") {
+			navVisible.value = window.scrollY <= 50;
+		} else {
+			navVisible.value = window.scrollY <= window.innerHeight * 0.3 ? false : true;
+		}
 	}
-	handleScroll();
+
+	// Handle scroll position restoration after page reload
+	requestAnimationFrame(() => {
+		if (typeof window !== "undefined") {
+			lastScrollY.value = window.scrollY;
+			// Show navbar if at top or scrolled up position
+			if (route.path !== "/") {
+				navVisible.value = true;
+			}
+		}
+	});
+	setTimeout(() => {
+		if (typeof window !== "undefined" && route.path !== "/") {
+			navVisible.value = true;
+		}
+	}, 100);
+
 	window.addEventListener("scroll", handleScroll, { passive: true });
 });
 
@@ -38,7 +86,7 @@ onUnmounted(() => {
 	}
 });
 
-// Always show nav on non-home pages
+// Handle route changes
 watch(
 	() => route.path,
 	(newPath) => {
@@ -46,11 +94,20 @@ watch(
 		if (newPath !== "/") {
 			navVisible.value = true;
 		} else {
-			handleScroll();
+			// Homepage: keep hidden until scrolled past hero
+			if (typeof window !== "undefined") {
+				lastScrollY.value = window.scrollY;
+				navVisible.value = window.scrollY > window.innerHeight * 0.3;
+			} else {
+				navVisible.value = false;
+			}
 		}
 	},
 	{ immediate: true }
 );
+
+// Provide navVisible state to child components
+provide("navVisible", navVisible);
 </script>
 
 <template>
