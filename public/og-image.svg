@@ -1,0 +1,94 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Dark gradient background -->
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0a1a"/>
+      <stop offset="50%" stop-color="#0f1629"/>
+      <stop offset="100%" stop-color="#0a0a1a"/>
+    </linearGradient>
+
+    <!-- Green glow gradient -->
+    <radialGradient id="glow-green" cx="30%" cy="30%" r="50%">
+      <stop offset="0%" stop-color="#22c55e" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Cyan glow gradient -->
+    <radialGradient id="glow-cyan" cx="70%" cy="70%" r="50%">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Text gradient -->
+    <linearGradient id="text-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#fde047"/>
+      <stop offset="50%" stop-color="#fb923c"/>
+      <stop offset="100%" stop-color="#ef4444"/>
+    </linearGradient>
+
+    <!-- Grid pattern -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#22c55e" stroke-width="0.5" opacity="0.1"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg-gradient)"/>
+
+  <!-- Glow effects -->
+  <rect width="1200" height="630" fill="url(#glow-green)"/>
+  <rect width="1200" height="630" fill="url(#glow-cyan)"/>
+
+  <!-- Grid overlay -->
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- Decorative rings -->
+  <circle cx="600" cy="315" r="250" fill="none" stroke="#22c55e" stroke-width="1" opacity="0.1"/>
+  <circle cx="600" cy="315" r="300" fill="none" stroke="#06b6d4" stroke-width="1" opacity="0.08"/>
+  <circle cx="600" cy="315" r="350" fill="none" stroke="#a855f7" stroke-width="1" opacity="0.05"/>
+
+  <!-- Corner decorations -->
+  <rect x="30" y="30" width="8" height="8" fill="#ef4444"/>
+  <rect x="42" y="30" width="8" height="8" fill="#eab308"/>
+  <rect x="54" y="30" width="8" height="8" fill="#22c55e"/>
+
+  <text x="1170" y="42" font-family="monospace" font-size="14" fill="#22c55e" text-anchor="end" opacity="0.5">v1.0</text>
+
+  <!-- Logo box -->
+  <rect x="550" y="140" width="100" height="100" rx="16" fill="url(#text-gradient)"/>
+  <text x="600" y="210" font-family="'Press Start 2P', monospace" font-size="48" fill="#0a0a1a" text-anchor="middle" font-weight="bold">D</text>
+
+  <!-- Main title -->
+  <text x="600" y="300" font-family="'Press Start 2P', monospace" font-size="48" fill="#ffffff" text-anchor="middle" letter-spacing="8">DIETWOI</text>
+
+  <!-- Subtitle with gradient -->
+  <text x="600" y="360" font-family="'Silkscreen', monospace" font-size="20" fill="url(#text-gradient)" text-anchor="middle" letter-spacing="4">ALL IN ONE HEALTH METRICS</text>
+
+  <!-- Divider -->
+  <rect x="450" y="390" width="60" height="4" fill="#22c55e" opacity="0.5"/>
+  <rect x="520" y="390" width="160" height="4" fill="url(#text-gradient)"/>
+  <rect x="690" y="390" width="60" height="4" fill="#06b6d4" opacity="0.5"/>
+
+  <!-- Calculator labels -->
+  <g font-family="'Silkscreen', monospace" font-size="16" text-anchor="middle" letter-spacing="2">
+    <text x="300" y="460" fill="#22c55e">BMI</text>
+    <text x="500" y="460" fill="#fb923c">BMR</text>
+    <text x="700" y="460" fill="#06b6d4">TDEE</text>
+    <text x="900" y="460" fill="#a855f7">BODY FAT</text>
+  </g>
+
+  <!-- Bottom decorative boxes -->
+  <rect x="285" y="480" width="30" height="4" fill="#22c55e" opacity="0.6"/>
+  <rect x="485" y="480" width="30" height="4" fill="#fb923c" opacity="0.6"/>
+  <rect x="685" y="480" width="30" height="4" fill="#06b6d4" opacity="0.6"/>
+  <rect x="885" y="480" width="30" height="4" fill="#a855f7" opacity="0.6"/>
+
+  <!-- Footer text -->
+  <text x="600" y="560" font-family="'Silkscreen', monospace" font-size="14" fill="#6b7280" text-anchor="middle" letter-spacing="2">FREE HEALTH CALCULATORS</text>
+
+  <!-- URL -->
+  <text x="600" y="590" font-family="monospace" font-size="12" fill="#4b5563" text-anchor="middle">dietwoi.com</text>
+
+  <!-- Bottom accent line -->
+  <rect x="0" y="622" width="1200" height="8" fill="url(#text-gradient)"/>
+</svg>
