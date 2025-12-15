@@ -268,7 +268,7 @@ provide("navVisible", navVisible);
 							<li v-for="item in category.items" :key="item.name">
 								<NuxtLink
 									:to="item.path"
-									class="font-game text-sm text-gray-500 hover:text-green-400 transition-colors">
+									class="font-game text-sm text-gray-400 hover:text-green-400 transition-colors">
 									{{ item.name }}
 								</NuxtLink>
 							</li>
@@ -293,11 +293,11 @@ provide("navVisible", navVisible);
 							<rect x="10" y="11" width="2" height="2" fill="#050510" />
 						</svg>
 						</div>
-						<span class="font-pixel text-[10px] text-gray-500">{{
+						<span class="font-pixel text-[10px] text-gray-400">{{
 							WEB_NAME
 						}}</span>
 					</div>
-					<p class="font-game text-xs text-gray-600 text-center">
+					<p class="font-game text-xs text-gray-500 text-center">
 						&copy; {{ new Date().getFullYear() }} Dietwoi. For informational
 						purposes only.
 					</p>

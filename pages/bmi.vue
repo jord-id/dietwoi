@@ -32,25 +32,16 @@ const config: CalculatorConfig = {
   ],
 }
 
-// Calculator
+// Calculator setup using shared composable
 const { calculate, ranges } = useBmi()
 
-const inputs = ref<Record<string, number | string>>({
-  weight: 70,
-  height: 170,
-})
+const { inputs, result, error, num } = useCalculatorSetup<BmiResult>(
+  config,
+  (i) => calculate({ weight: Number(i.weight), height: Number(i.height) })
+)
 
-const result = ref<BmiResult | null>(null)
-
-const calculateBmi = () => {
-  result.value = calculate({
-    weight: inputs.value.weight as number,
-    height: inputs.value.height as number,
-  })
-}
-
-onMounted(calculateBmi)
-watch(inputs, calculateBmi, { deep: true })
+const weight = num('weight')
+const height = num('height')
 
 // Category colors
 const categoryColors: Record<string, { bg: string; text: string; gradient: string }> = {
@@ -114,16 +105,29 @@ const rangeColors: Record<string, { border: string; bar: string; text: string }>
     </template>
 
     <template #results>
+      <!-- Error Display -->
+      <div v-if="error" class="p-4 border-2 border-red-300 bg-red-50 mb-6">
+        <div class="flex items-center gap-2">
+          <div class="w-2 h-2 bg-red-500" />
+          <span class="font-pixel text-xs text-red-700">ERROR</span>
+        </div>
+        <p class="font-game text-sm text-red-600 mt-2">{{ error }}</p>
+      </div>
       <div v-if="result" class="space-y-6">
         <!-- BMI Gauge -->
         <div class="flex justify-center">
           <div class="relative w-48 h-24">
             <svg class="w-full h-full" viewBox="0 0 200 100">
+              <!-- Background arc -->
               <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="#e5e7eb" stroke-width="12" stroke-linecap="round" />
-              <path d="M 10 100 A 90 90 0 0 1 45 30" fill="none" stroke="#3b82f6" stroke-width="12" stroke-linecap="round" />
-              <path d="M 45 30 A 90 90 0 0 1 100 10" fill="none" stroke="#22c55e" stroke-width="12" />
-              <path d="M 100 10 A 90 90 0 0 1 155 30" fill="none" stroke="#eab308" stroke-width="12" />
-              <path d="M 155 30 A 90 90 0 0 1 190 100" fill="none" stroke="#ef4444" stroke-width="12" stroke-linecap="round" />
+              <!-- Underweight: BMI 15-18.5 (0° to 25.2°) -->
+              <path d="M 10 100 A 90 90 0 0 1 19 62" fill="none" stroke="#3b82f6" stroke-width="12" stroke-linecap="round" />
+              <!-- Normal: BMI 18.5-25 (25.2° to 72°) -->
+              <path d="M 19 62 A 90 90 0 0 1 72 14" fill="none" stroke="#22c55e" stroke-width="12" />
+              <!-- Overweight: BMI 25-30 (72° to 108°) -->
+              <path d="M 72 14 A 90 90 0 0 1 128 14" fill="none" stroke="#eab308" stroke-width="12" />
+              <!-- Obese: BMI 30-40 (108° to 180°) -->
+              <path d="M 128 14 A 90 90 0 0 1 190 100" fill="none" stroke="#ef4444" stroke-width="12" stroke-linecap="round" />
             </svg>
             <div
               class="absolute bottom-0 left-1/2 origin-bottom transition-transform duration-500"
@@ -150,8 +154,8 @@ const rangeColors: Record<string, { border: string; bar: string; text: string }>
 
         <!-- Details -->
         <div class="grid grid-cols-2 gap-4">
-          <CalculatorResultCard title="Your Weight" :value="inputs.weight as number" unit="kg" color="teal" size="sm" />
-          <CalculatorResultCard title="Your Height" :value="inputs.height as number" unit="cm" color="teal" size="sm" />
+          <CalculatorResultCard title="Your Weight" :value="weight" unit="kg" color="teal" size="sm" />
+          <CalculatorResultCard title="Your Height" :value="height" unit="cm" color="teal" size="sm" />
         </div>
 
         <!-- Healthy Range -->

@@ -94,17 +94,24 @@ const inputs = ref<Record<string, number | string>>({
   activityLevel: 'moderate',
 })
 
+// Type-safe accessors (centralized type narrowing)
+const weight = computed(() => Number(inputs.value.weight))
+const height = computed(() => Number(inputs.value.height))
+const age = computed(() => Number(inputs.value.age))
+const gender = computed(() => inputs.value.gender as 'male' | 'female')
+const activityLevel = computed(() => inputs.value.activityLevel as ActivityLevel)
+
 const selectedGoal = ref<Goal>('maintain')
 const selectedDiet = ref<DietType>('balanced')
 
 // Calculations
 const tdeeResult = computed(() => {
   return calculateTdee({
-    weight: inputs.value.weight as number,
-    height: inputs.value.height as number,
-    age: inputs.value.age as number,
-    gender: inputs.value.gender as 'male' | 'female',
-    activityLevel: inputs.value.activityLevel as ActivityLevel,
+    weight: weight.value,
+    height: height.value,
+    age: age.value,
+    gender: gender.value,
+    activityLevel: activityLevel.value,
   })
 })
 
@@ -144,8 +151,7 @@ const macros = computed(() => {
 })
 
 const proteinPerKg = computed(() => {
-  const weight = inputs.value.weight as number
-  return (macros.value.protein.grams / weight).toFixed(1)
+  return (macros.value.protein.grams / weight.value).toFixed(1)
 })
 </script>
 

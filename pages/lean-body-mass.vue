@@ -41,20 +41,24 @@ const inputs = ref<Record<string, number | string>>({
   height: 170,
 })
 
+// Type-safe accessors (centralized type narrowing)
+const weight = computed(() => Number(inputs.value.weight))
+const height = computed(() => Number(inputs.value.height))
+const gender = computed(() => inputs.value.gender as 'male' | 'female')
+
 const bodyFatInput = ref<number | null>(null)
 
 const result = computed(() => {
   return calculate({
-    weight: inputs.value.weight as number,
-    height: inputs.value.height as number,
-    gender: inputs.value.gender as 'male' | 'female',
+    weight: weight.value,
+    height: height.value,
+    gender: gender.value,
     bodyFatPercentage: bodyFatInput.value ?? undefined,
   })
 })
 
 const lbmPercentage = computed(() => {
-  const weight = inputs.value.weight as number
-  return Math.round((result.value.average / weight) * 100)
+  return Math.round((result.value.average / weight.value) * 100)
 })
 
 const fatPercentage = computed(() => {

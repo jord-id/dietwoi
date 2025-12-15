@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { categories } from "~/config/calculators";
+import { categories, getCardColorClasses } from "~/config/calculators";
 
 const activeCategory = ref(0);
 const sectionRef = ref<HTMLElement | null>(null);
@@ -179,26 +179,26 @@ watch(navVisible, () => {
 								v-if="!calc.comingSoon"
 								:to="calc.path"
 								class="group relative bg-white p-2.5 sm:p-4 border-2 transition-all duration-200 shadow-sm hover:shadow-md flex flex-col min-h-[130px] sm:min-h-[160px]"
-								:class="calc.borderColor">
+								:class="getCardColorClasses(calc.cardColor).border">
 								<!-- Corner accents -->
 								<div
 									class="absolute top-0 left-0 w-2 h-2 sm:w-3 sm:h-3 border-t-2 border-l-2"
-									:class="calc.borderColor.replace('hover:', '')" />
+									:class="getCardColorClasses(calc.cardColor).border.replace('hover:', '')" />
 								<div
 									class="absolute top-0 right-0 w-2 h-2 sm:w-3 sm:h-3 border-t-2 border-r-2"
-									:class="calc.borderColor.replace('hover:', '')" />
+									:class="getCardColorClasses(calc.cardColor).border.replace('hover:', '')" />
 								<div
 									class="absolute bottom-0 left-0 w-2 h-2 sm:w-3 sm:h-3 border-b-2 border-l-2"
-									:class="calc.borderColor.replace('hover:', '')" />
+									:class="getCardColorClasses(calc.cardColor).border.replace('hover:', '')" />
 								<div
 									class="absolute bottom-0 right-0 w-2 h-2 sm:w-3 sm:h-3 border-b-2 border-r-2"
-									:class="calc.borderColor.replace('hover:', '')" />
+									:class="getCardColorClasses(calc.cardColor).border.replace('hover:', '')" />
 
 								<!-- Header -->
 								<div class="flex items-start justify-between mb-1 sm:mb-2">
 									<div>
 										<h3
-											:class="['font-pixel text-xs sm:text-base', calc.color]">
+											:class="['font-pixel text-xs sm:text-base', getCardColorClasses(calc.cardColor).text]">
 											{{ calc.name }}
 										</h3>
 										<p
@@ -264,7 +264,7 @@ watch(navVisible, () => {
 									<h3
 										:class="[
 											'font-pixel text-xs sm:text-base',
-											calc.color,
+											getCardColorClasses(calc.cardColor).text,
 											'opacity-70',
 										]">
 										{{ calc.name }}

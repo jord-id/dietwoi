@@ -34,29 +34,18 @@ const config: CalculatorConfig = {
   ],
 }
 
-// Calculator
+// Calculator setup using shared composable
 const { calculate, activityMultipliers } = useBmr()
 
-const inputs = ref<Record<string, number | string>>({
-  gender: 'male',
-  weight: 70,
-  height: 170,
-  age: 30,
-})
-
-const result = ref<BmrResult | null>(null)
-
-const calculateBmr = () => {
-  result.value = calculate({
-    weight: inputs.value.weight as number,
-    height: inputs.value.height as number,
-    age: inputs.value.age as number,
-    gender: inputs.value.gender as 'male' | 'female',
+const { inputs, result } = useCalculatorSetup<BmrResult>(
+  config,
+  (i) => calculate({
+    weight: Number(i.weight),
+    height: Number(i.height),
+    age: Number(i.age),
+    gender: String(i.gender) as 'male' | 'female',
   })
-}
-
-onMounted(calculateBmr)
-watch(inputs, calculateBmr, { deep: true })
+)
 
 // Activity level descriptions and colors
 const activityDescriptions: Record<string, { name: string; description: string }> = {

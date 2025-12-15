@@ -34,38 +34,20 @@ const config: CalculatorConfig = {
   ],
 }
 
-// Calculator
+// Calculator setup using shared composable
 const { calculate, getRanges } = useBodyFat()
 
-const inputs = ref<Record<string, number | string>>({
-  gender: 'male',
-  weight: 70,
-  height: 170,
-  age: 30,
-})
-
-const result = ref<BodyFatResult | null>(null)
-
-const calculateBodyFat = () => {
-  result.value = calculate({
-    weight: inputs.value.weight as number,
-    height: inputs.value.height as number,
-    age: inputs.value.age as number,
-    gender: inputs.value.gender as 'male' | 'female',
+const { inputs, result, str } = useCalculatorSetup<BodyFatResult>(
+  config,
+  (i) => calculate({
+    weight: Number(i.weight),
+    height: Number(i.height),
+    age: Number(i.age),
+    gender: String(i.gender) as 'male' | 'female',
   })
-}
+)
 
-onMounted(calculateBodyFat)
-watch(inputs, calculateBodyFat, { deep: true })
-
-// Category colors for result display
-const categoryColors: Record<string, { bg: string; text: string; bar: string }> = {
-  'Essential Fat': { bg: 'bg-blue-50', text: 'text-blue-700', bar: 'bg-blue-500' },
-  'Athletes': { bg: 'bg-green-50', text: 'text-green-700', bar: 'bg-green-500' },
-  'Fitness': { bg: 'bg-emerald-50', text: 'text-emerald-700', bar: 'bg-emerald-500' },
-  'Average': { bg: 'bg-yellow-50', text: 'text-yellow-700', bar: 'bg-yellow-500' },
-  'Obese': { bg: 'bg-red-50', text: 'text-red-700', bar: 'bg-red-500' },
-}
+const gender = computed(() => str('gender').value as 'male' | 'female')
 
 // Range colors for body fat categories in reference section
 const rangeColors: Record<string, { border: string; bar: string; text: string }> = {
@@ -76,12 +58,7 @@ const rangeColors: Record<string, { border: string; bar: string; text: string }>
   'Obese': { border: 'border-red-200', bar: 'bg-red-500', text: 'text-red-700' },
 }
 
-const currentColor = computed(() => {
-  if (!result.value) return categoryColors['Average']
-  return categoryColors[result.value.category] || categoryColors['Average']
-})
-
-const ranges = computed(() => getRanges(inputs.value.gender as 'male' | 'female'))
+const ranges = computed(() => getRanges(gender.value))
 </script>
 
 <template>

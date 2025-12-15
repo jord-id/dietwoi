@@ -106,3 +106,127 @@ export const colorAccents: Record<CalculatorColor, { gradient: string; text: str
     bg: 'bg-amber-50',
   },
 }
+
+// Consolidated color styles - single source of truth for all components
+export interface ColorStyle {
+  // Backgrounds
+  bg50: string
+  bg400: string
+  bg500: string
+  // Text
+  text500: string
+  text600: string
+  // Borders
+  border300: string
+  border400: string
+  border500: string
+  // Gradient
+  gradient: string
+}
+
+export const colorStyles: Record<CalculatorColor, ColorStyle> = {
+  purple: {
+    bg50: 'bg-purple-50',
+    bg400: 'bg-purple-400',
+    bg500: 'bg-purple-500',
+    text500: 'text-purple-500',
+    text600: 'text-purple-600',
+    border300: 'border-purple-300',
+    border400: 'border-purple-400',
+    border500: 'border-purple-500',
+    gradient: 'from-purple-500 to-violet-500',
+  },
+  orange: {
+    bg50: 'bg-orange-50',
+    bg400: 'bg-orange-400',
+    bg500: 'bg-orange-500',
+    text500: 'text-orange-500',
+    text600: 'text-orange-600',
+    border300: 'border-orange-300',
+    border400: 'border-orange-400',
+    border500: 'border-orange-500',
+    gradient: 'from-orange-500 to-amber-500',
+  },
+  blue: {
+    bg50: 'bg-blue-50',
+    bg400: 'bg-blue-400',
+    bg500: 'bg-blue-500',
+    text500: 'text-blue-500',
+    text600: 'text-blue-600',
+    border300: 'border-blue-300',
+    border400: 'border-blue-400',
+    border500: 'border-blue-500',
+    gradient: 'from-blue-500 to-indigo-500',
+  },
+  teal: {
+    bg50: 'bg-teal-50',
+    bg400: 'bg-teal-400',
+    bg500: 'bg-teal-500',
+    text500: 'text-teal-500',
+    text600: 'text-teal-600',
+    border300: 'border-teal-300',
+    border400: 'border-teal-400',
+    border500: 'border-teal-500',
+    gradient: 'from-teal-500 to-cyan-500',
+  },
+  pink: {
+    bg50: 'bg-pink-50',
+    bg400: 'bg-pink-400',
+    bg500: 'bg-pink-500',
+    text500: 'text-pink-500',
+    text600: 'text-pink-600',
+    border300: 'border-pink-300',
+    border400: 'border-pink-400',
+    border500: 'border-pink-500',
+    gradient: 'from-pink-500 to-rose-500',
+  },
+  red: {
+    bg50: 'bg-red-50',
+    bg400: 'bg-red-400',
+    bg500: 'bg-red-500',
+    text500: 'text-red-500',
+    text600: 'text-red-600',
+    border300: 'border-red-300',
+    border400: 'border-red-400',
+    border500: 'border-red-500',
+    gradient: 'from-red-500 to-rose-500',
+  },
+  green: {
+    bg50: 'bg-green-50',
+    bg400: 'bg-green-400',
+    bg500: 'bg-green-500',
+    text500: 'text-green-500',
+    text600: 'text-green-600',
+    border300: 'border-green-300',
+    border400: 'border-green-400',
+    border500: 'border-green-500',
+    gradient: 'from-green-500 to-emerald-500',
+  },
+  cyan: {
+    bg50: 'bg-cyan-50',
+    bg400: 'bg-cyan-400',
+    bg500: 'bg-cyan-500',
+    text500: 'text-cyan-500',
+    text600: 'text-cyan-600',
+    border300: 'border-cyan-300',
+    border400: 'border-cyan-400',
+    border500: 'border-cyan-500',
+    gradient: 'from-cyan-500 to-sky-500',
+  },
+  amber: {
+    bg50: 'bg-amber-50',
+    bg400: 'bg-amber-400',
+    bg500: 'bg-amber-500',
+    text500: 'text-amber-500',
+    text600: 'text-amber-600',
+    border300: 'border-amber-300',
+    border400: 'border-amber-400',
+    border500: 'border-amber-500',
+    gradient: 'from-amber-500 to-yellow-500',
+  },
+}
+
+// Helper to get color styles with fallback
+export const getColorStyles = (color: CalculatorColor): ColorStyle => {
+  return colorStyles[color] || colorStyles.orange
+}

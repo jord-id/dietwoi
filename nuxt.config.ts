@@ -33,7 +33,7 @@ export default defineNuxtConfig({
 			link: [{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
 			script: [
 				{
-					src: "http://100.75.81.103:3000/script.js",
+					src: "https://analytics.jord.id/script.js",
 					defer: true,
 					"data-website-id": "7a9c0e4b-36f7-4134-8a17-77a02bac4dd3",
 				},

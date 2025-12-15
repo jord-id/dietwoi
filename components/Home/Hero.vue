@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ComponentPublicInstance } from "vue";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -340,16 +341,26 @@ onMounted(() => {
 
 // Cleanup all GSAP animations on unmount
 onUnmounted(() => {
+	// Clear floating elements ref to prevent accumulation
+	floatingElements.value = [];
+
+	// Revert GSAP context (kills all animations created within it)
 	if (gsapContext) {
 		gsapContext.revert();
+		gsapContext = null;
 	}
-	// Clear ScrollTrigger instances
-	ScrollTrigger.getAll().forEach((st) => st.kill());
+
+	// Kill only ScrollTriggers associated with this hero section
+	ScrollTrigger.getAll().forEach((st) => {
+		if (st.trigger === heroRef.value || heroRef.value?.contains(st.trigger as Node)) {
+			st.kill();
+		}
+	});
 });
 
 // Register floating elements - reset on each mount
-const setFloatingRef = (el: any) => {
-	if (el && !floatingElements.value.includes(el)) {
+const setFloatingRef = (el: Element | ComponentPublicInstance | null) => {
+	if (el && el instanceof HTMLElement && !floatingElements.value.includes(el)) {
 		floatingElements.value.push(el);
 	}
 };
