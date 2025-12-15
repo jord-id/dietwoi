@@ -30,8 +30,13 @@ export default defineNuxtConfig({
 			},
 			charset: "utf-8",
 			viewport: "width=device-width, initial-scale=1",
-			link: [
-				{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+			link: [{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
+			script: [
+				{
+					src: "http://100.75.81.103:3000/script.js",
+					defer: true,
+					"data-website-id": "7a9c0e4b-36f7-4134-8a17-77a02bac4dd3",
+				},
 			],
 		},
 	},
