@@ -3,6 +3,9 @@
 const showSplash = ref(false)
 const contentReady = ref(false)
 
+// Provide splash complete state to child components (e.g., Hero animations)
+provide('splashComplete', contentReady)
+
 onMounted(() => {
   const hasVisited = sessionStorage.getItem('dietwoi-visited')
 

@@ -32,25 +32,16 @@ const config: CalculatorConfig = {
   ],
 }
 
-// Calculator
+// Calculator setup using shared composable
 const { calculate } = useOneRepMax()
 
-const inputs = ref<Record<string, number | string>>({
-  weight: 80,
-  reps: 5,
-})
-
-const result = ref<OneRepMaxResult | null>(null)
-
-const calculateOneRepMax = () => {
-  result.value = calculate({
-    weight: inputs.value.weight as number,
-    reps: inputs.value.reps as number,
+const { inputs, result } = useCalculatorSetup<OneRepMaxResult>(
+  config,
+  (i) => calculate({
+    weight: Number(i.weight),
+    reps: Number(i.reps),
   })
-}
-
-onMounted(calculateOneRepMax)
-watch(inputs, calculateOneRepMax, { deep: true })
+)
 </script>
 
 <template>

@@ -31,15 +31,7 @@ const config: CalculatorConfig = {
   ],
 }
 
-// Calculator
-const { calculate } = useIdealWeight()
-
-const inputs = ref<Record<string, number | string>>({
-  gender: 'male',
-  height: 170,
-  currentWeight: 0,
-})
-
+// Result type for ideal weight
 interface IdealWeightResult {
   devine: number
   robinson: number
@@ -48,17 +40,21 @@ interface IdealWeightResult {
   bmiRange: { min: number; max: number }
 }
 
-const result = ref<IdealWeightResult | null>(null)
+// Calculator setup using shared composable
+const { calculate } = useIdealWeight()
 
-const calculateIdealWeight = () => {
-  result.value = calculate({
-    height: inputs.value.height as number,
-    gender: inputs.value.gender as 'male' | 'female',
+const { inputs, result, num } = useCalculatorSetup<IdealWeightResult>(
+  config,
+  (i) => calculate({
+    height: Number(i.height),
+    gender: String(i.gender) as 'male' | 'female',
   })
-}
+)
 
-onMounted(calculateIdealWeight)
-watch(inputs, calculateIdealWeight, { deep: true })
+// Extra input not in config (for comparison feature)
+inputs.value.currentWeight = 0
+const height = num('height')
+const currentWeight = computed(() => Number(inputs.value.currentWeight))
 
 // Calculate average of all formulas
 const average = computed(() => {
@@ -76,10 +72,10 @@ const formulas = [
 ]
 
 // Weight comparison if user provides current weight
-const showComparison = computed(() => inputs.value.currentWeight && inputs.value.currentWeight > 0)
+const showComparison = computed(() => currentWeight.value > 0)
 const weightDifference = computed(() => {
-  if (!result.value || !inputs.value.currentWeight) return 0
-  return Math.round(((inputs.value.currentWeight as number) - average.value) * 10) / 10
+  if (!result.value || !currentWeight.value) return 0
+  return Math.round((currentWeight.value - average.value) * 10) / 10
 })
 const weightStatus = computed(() => {
   if (weightDifference.value > 0) return { label: 'above', color: 'text-red-600' }
@@ -94,7 +90,7 @@ const weightStatus = computed(() => {
       <!-- Optional current weight input -->
       <div>
         <CalculatorInputSlider
-          v-model="inputs.currentWeight as number"
+          v-model="inputs.currentWeight"
           :min="0"
           :max="200"
           :step="0.1"
@@ -174,7 +170,7 @@ const weightStatus = computed(() => {
           <div class="absolute top-0 left-0 right-0 h-1 bg-amber-500" />
           <p class="font-pixel text-[10px] sm:text-xs text-amber-700 mb-1 tracking-wide">HEALTHY BMI WEIGHT RANGE</p>
           <p class="font-game text-sm text-gray-600">
-            For your height ({{ inputs.height }}cm), a healthy weight (BMI 18.5-24.9) is:
+            For your height ({{ height }}cm), a healthy weight (BMI 18.5-24.9) is:
           </p>
           <p class="font-game text-lg sm:text-xl font-semibold text-amber-700 mt-1">
             {{ result.bmiRange.min }} - {{ result.bmiRange.max }} kg
@@ -191,12 +187,12 @@ const weightStatus = computed(() => {
             <div class="flex-1 h-3 bg-gray-200 border border-gray-300">
               <div
                 class="h-full bg-amber-500"
-                :style="{ width: `${Math.min((average / (inputs.currentWeight as number)) * 100, 100)}%` }"
+                :style="{ width: `${Math.min((average / currentWeight) * 100, 100)}%` }"
               />
             </div>
           </div>
           <div class="flex justify-between font-game text-xs text-gray-500 mt-1">
-            <span>Current: {{ inputs.currentWeight }}kg</span>
+            <span>Current: {{ currentWeight }}kg</span>
             <span>Ideal: {{ average }}kg</span>
           </div>
         </div>

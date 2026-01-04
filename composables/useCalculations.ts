@@ -1,5 +1,36 @@
 // Health calculation composables with proper formulas and types
 
+// Input validation error
+export class CalculationError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'CalculationError'
+  }
+}
+
+// Validation helpers
+const validatePositive = (value: number, field: string): void => {
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
+    throw new CalculationError(`${field} must be a valid number`)
+  }
+  if (value <= 0) {
+    throw new CalculationError(`${field} must be greater than 0`)
+  }
+}
+
+const validateRange = (value: number, min: number, max: number, field: string): void => {
+  validatePositive(value, field)
+  if (value < min || value > max) {
+    throw new CalculationError(`${field} must be between ${min} and ${max}`)
+  }
+}
+
+const validateGender = (gender: string): void => {
+  if (gender !== 'male' && gender !== 'female') {
+    throw new CalculationError('Gender must be "male" or "female"')
+  }
+}
+
 export interface BmiInput {
   weight: number // kg
   height: number // cm
@@ -111,7 +142,13 @@ const BMI_RANGES = {
   normal: { min: 18.5, max: 24.9, label: 'Normal' },
   overweight: { min: 25, max: 29.9, label: 'Overweight' },
   obese: { min: 30, label: 'Obese' },
-}
+} as const
+
+/** BMI category key type */
+export type BmiCategory = keyof typeof BMI_RANGES
+
+/** BMI ranges type */
+export type BmiRanges = typeof BMI_RANGES
 
 // Body fat ranges by gender
 const BODY_FAT_RANGES = {
@@ -137,6 +174,10 @@ const BODY_FAT_RANGES = {
  */
 export function useBmi() {
   const calculate = (input: BmiInput): BmiResult => {
+    // Validate inputs
+    validateRange(input.weight, 20, 500, 'Weight')
+    validateRange(input.height, 50, 300, 'Height')
+
     const heightM = input.height / 100
     const bmi = input.weight / (heightM * heightM)
 
@@ -163,7 +204,11 @@ export function useBmi() {
     return BMI_RANGES[category]
   }
 
-  return { calculate, getCategoryInfo, ranges: BMI_RANGES }
+  return {
+    calculate,
+    getCategoryInfo,
+    ranges: BMI_RANGES as BmiRanges,
+  }
 }
 
 /**
@@ -174,6 +219,12 @@ export function useBmi() {
  */
 export function useBmr() {
   const calculate = (input: BmrInput): BmrResult => {
+    // Validate inputs
+    validateRange(input.weight, 20, 500, 'Weight')
+    validateRange(input.height, 50, 300, 'Height')
+    validateRange(input.age, 1, 120, 'Age')
+    validateGender(input.gender)
+
     let bmr: number
 
     if (input.gender === 'male') {
@@ -262,6 +313,10 @@ export function useBodyFat() {
   const { calculate: calculateBmi } = useBmi()
 
   const calculate = (input: BodyFatInput): BodyFatResult => {
+    // Validate inputs (BMI calculation will also validate weight/height)
+    validateRange(input.age, 1, 120, 'Age')
+    validateGender(input.gender)
+
     const bmiResult = calculateBmi({ weight: input.weight, height: input.height })
     const genderFactor = input.gender === 'male' ? 1 : 0
 
@@ -319,6 +374,14 @@ export function useLeanBodyMass() {
   }
 
   const calculate = (input: LbmInput): LbmResult => {
+    // Validate inputs
+    validateRange(input.weight, 20, 500, 'Weight')
+    validateRange(input.height, 50, 300, 'Height')
+    validateGender(input.gender)
+    if (input.bodyFatPercentage !== undefined) {
+      validateRange(input.bodyFatPercentage, 1, 70, 'Body fat percentage')
+    }
+
     let boer: number, hume: number
 
     if (input.gender === 'male') {
@@ -376,6 +439,10 @@ export function useIdealWeight() {
   }
 
   const calculate = (input: IdealWeightInput): IdealWeightResult => {
+    // Validate inputs
+    validateRange(input.height, 50, 300, 'Height')
+    validateGender(input.gender)
+
     const heightInches = input.height / 2.54
     const inchesOver5ft = Math.max(0, heightInches - 60)
     const heightM = input.height / 100
@@ -451,6 +518,10 @@ export function useMacros() {
  */
 export function useOneRepMax() {
   const calculate = (input: OneRepMaxInput): OneRepMaxResult => {
+    // Validate inputs
+    validateRange(input.weight, 1, 1000, 'Weight')
+    validateRange(input.reps, 1, 30, 'Reps')
+
     const { weight, reps } = input
 
     // Epley Formula: 1RM = weight × (1 + reps/30)
@@ -522,6 +593,9 @@ export function useWaterIntake() {
   }
 
   const calculate = (input: WaterIntakeInput): WaterIntakeResult => {
+    // Validate inputs
+    validateRange(input.weight, 20, 500, 'Weight')
+
     // Baseline: 33ml per kg (average of 30-35ml)
     const baseline = input.weight * 33
 

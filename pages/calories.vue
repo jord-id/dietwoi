@@ -71,16 +71,23 @@ const inputs = ref<Record<string, number | string>>({
   activityLevel: 'moderate',
 })
 
+// Type-safe accessors (centralized type narrowing)
+const weight = computed(() => Number(inputs.value.weight))
+const height = computed(() => Number(inputs.value.height))
+const age = computed(() => Number(inputs.value.age))
+const gender = computed(() => inputs.value.gender as 'male' | 'female')
+const activityLevel = computed(() => inputs.value.activityLevel as ActivityLevel)
+
 const selectedGoal = ref<Goal>('maintain')
 
 // Calculations
 const tdeeResult = computed(() => {
   return calculateTdee({
-    weight: inputs.value.weight as number,
-    height: inputs.value.height as number,
-    age: inputs.value.age as number,
-    gender: inputs.value.gender as 'male' | 'female',
-    activityLevel: inputs.value.activityLevel as ActivityLevel,
+    weight: weight.value,
+    height: height.value,
+    age: age.value,
+    gender: gender.value,
+    activityLevel: activityLevel.value,
   })
 })
 
@@ -88,7 +95,7 @@ const currentGoal = computed(() => GOALS[selectedGoal.value])
 
 const targetCalories = computed(() => {
   const target = tdeeResult.value.tdee + currentGoal.value.calorieAdjust
-  const minCal = MIN_CALORIES[inputs.value.gender as 'male' | 'female']
+  const minCal = MIN_CALORIES[gender.value]
 
   // Don't go below safe minimums
   return Math.max(target, minCal)
@@ -96,7 +103,7 @@ const targetCalories = computed(() => {
 
 const isUnderMinimum = computed(() => {
   const target = tdeeResult.value.tdee + currentGoal.value.calorieAdjust
-  const minCal = MIN_CALORIES[inputs.value.gender as 'male' | 'female']
+  const minCal = MIN_CALORIES[gender.value]
   return target < minCal
 })
 
@@ -223,7 +230,7 @@ const bulkGoals = computed(() =>
             <div>
               <p class="font-pixel text-[10px] sm:text-xs text-red-800 tracking-wide">MINIMUM CALORIE WARNING</p>
               <p class="font-game text-sm text-red-600 mt-1">
-                Target is below safe minimum of {{ MIN_CALORIES[inputs.gender as 'male' | 'female'] }} kcal. Consider a smaller deficit.
+                Target is below safe minimum of {{ MIN_CALORIES[gender] }} kcal. Consider a smaller deficit.
               </p>
             </div>
           </div>

@@ -1,10 +1,81 @@
+// Valid card colors for home page calculator cards
+export type CardColor =
+	| "violet"
+	| "emerald"
+	| "amber"
+	| "green"
+	| "orange"
+	| "sky"
+	| "pink"
+	| "cyan"
+	| "red"
+	| "blue"
+	| "indigo";
+
+// Color class mappings for type-safe styling
+export const cardColorStyles: Record<
+	CardColor,
+	{ text: string; border: string }
+> = {
+	violet: {
+		text: "text-violet-600",
+		border: "border-violet-300 hover:border-violet-500",
+	},
+	emerald: {
+		text: "text-emerald-600",
+		border: "border-emerald-300 hover:border-emerald-500",
+	},
+	amber: {
+		text: "text-amber-600",
+		border: "border-amber-300 hover:border-amber-500",
+	},
+	green: {
+		text: "text-green-600",
+		border: "border-green-300 hover:border-green-500",
+	},
+	orange: {
+		text: "text-orange-600",
+		border: "border-orange-300 hover:border-orange-500",
+	},
+	sky: {
+		text: "text-sky-600",
+		border: "border-sky-300 hover:border-sky-500",
+	},
+	pink: {
+		text: "text-pink-600",
+		border: "border-pink-300 hover:border-pink-500",
+	},
+	cyan: {
+		text: "text-cyan-600",
+		border: "border-cyan-300 hover:border-cyan-500",
+	},
+	red: {
+		text: "text-red-600",
+		border: "border-red-300 hover:border-red-500",
+	},
+	blue: {
+		text: "text-blue-600",
+		border: "border-blue-300 hover:border-blue-500",
+	},
+	indigo: {
+		text: "text-indigo-600",
+		border: "border-indigo-300 hover:border-indigo-500",
+	},
+};
+
+// Helper to get color classes
+export const getCardColorClasses = (
+	color: CardColor
+): { text: string; border: string } => {
+	return cardColorStyles[color];
+};
+
 export interface Calculator {
 	id: string;
 	name: string;
 	fullName: string;
 	path: string;
-	color: string;
-	borderColor: string;
+	cardColor: CardColor;
 	description: string;
 	comingSoon?: boolean;
 }
@@ -25,8 +96,7 @@ export const categories: Category[] = [
 				name: "BMI",
 				fullName: "Body Mass Index",
 				path: "/bmi",
-				color: "text-violet-600",
-				borderColor: "border-violet-300 hover:border-violet-500",
+				cardColor: "violet",
 				description: "Assess if you're at a healthy weight for your height",
 			},
 			{
@@ -34,8 +104,7 @@ export const categories: Category[] = [
 				name: "BF%",
 				fullName: "Body Fat Percentage",
 				path: "/body-fat",
-				color: "text-emerald-600",
-				borderColor: "border-emerald-300 hover:border-emerald-500",
+				cardColor: "emerald",
 				description: "Estimate your body fat percentage",
 			},
 			{
@@ -43,8 +112,7 @@ export const categories: Category[] = [
 				name: "IDEAL",
 				fullName: "Ideal Body Weight",
 				path: "/ideal-weight",
-				color: "text-amber-600",
-				borderColor: "border-amber-300 hover:border-amber-500",
+				cardColor: "amber",
 				description: "Find your ideal weight range",
 			},
 			{
@@ -52,8 +120,7 @@ export const categories: Category[] = [
 				name: "LBM",
 				fullName: "Lean Body Mass",
 				path: "/lean-body-mass",
-				color: "text-green-600",
-				borderColor: "border-green-300 hover:border-green-500",
+				cardColor: "green",
 				description: "Calculate your lean muscle mass",
 			},
 		],
@@ -67,8 +134,7 @@ export const categories: Category[] = [
 				name: "BMR",
 				fullName: "Basal Metabolic Rate",
 				path: "/bmr",
-				color: "text-orange-600",
-				borderColor: "border-orange-300 hover:border-orange-500",
+				cardColor: "orange",
 				description: "Calculate calories burned at rest",
 			},
 			{
@@ -76,8 +142,7 @@ export const categories: Category[] = [
 				name: "TDEE",
 				fullName: "Total Daily Energy",
 				path: "/tdee",
-				color: "text-sky-600",
-				borderColor: "border-sky-300 hover:border-sky-500",
+				cardColor: "sky",
 				description: "Total calories burned daily",
 			},
 			{
@@ -85,8 +150,7 @@ export const categories: Category[] = [
 				name: "CAL",
 				fullName: "Calorie Calculator",
 				path: "/calories",
-				color: "text-amber-600",
-				borderColor: "border-amber-300 hover:border-amber-500",
+				cardColor: "amber",
 				description: "Daily calorie needs for your goals",
 			},
 			{
@@ -94,8 +158,7 @@ export const categories: Category[] = [
 				name: "MACRO",
 				fullName: "Macro Calculator",
 				path: "/macros",
-				color: "text-pink-600",
-				borderColor: "border-pink-300 hover:border-pink-500",
+				cardColor: "pink",
 				description: "Protein, carbs & fat split",
 			},
 		],
@@ -109,8 +172,7 @@ export const categories: Category[] = [
 				name: "H2O",
 				fullName: "Water Intake",
 				path: "/water-intake",
-				color: "text-cyan-600",
-				borderColor: "border-cyan-300 hover:border-cyan-500",
+				cardColor: "cyan",
 				description: "Daily hydration needs",
 			},
 		],
@@ -124,8 +186,7 @@ export const categories: Category[] = [
 				name: "1RM",
 				fullName: "One Rep Max",
 				path: "/one-rep-max",
-				color: "text-red-600",
-				borderColor: "border-red-300 hover:border-red-500",
+				cardColor: "red",
 				description: "Calculate your maximum lift",
 			},
 		],
@@ -139,8 +200,7 @@ export const categories: Category[] = [
 				name: "PROT",
 				fullName: "Protein Calculator",
 				path: "/protein",
-				color: "text-blue-500",
-				borderColor: "border-blue-200",
+				cardColor: "blue",
 				description: "Calculate optimal protein intake for your goals",
 				comingSoon: true,
 			},
@@ -149,8 +209,7 @@ export const categories: Category[] = [
 				name: "BURN",
 				fullName: "Calories Burned",
 				path: "/calories-burned",
-				color: "text-orange-500",
-				borderColor: "border-orange-200",
+				cardColor: "orange",
 				description: "Calculate calories burned by activity (MET-based)",
 				comingSoon: true,
 			},
@@ -159,8 +218,7 @@ export const categories: Category[] = [
 				name: "HR",
 				fullName: "Heart Rate Zones",
 				path: "/heart-rate-zones",
-				color: "text-red-500",
-				borderColor: "border-red-200",
+				cardColor: "red",
 				description: "Find your training heart rate zones",
 				comingSoon: true,
 			},
@@ -169,8 +227,7 @@ export const categories: Category[] = [
 				name: "PACE",
 				fullName: "Pace Calculator",
 				path: "/pace-calculator",
-				color: "text-sky-500",
-				borderColor: "border-sky-200",
+				cardColor: "sky",
 				description: "Convert pace, speed & race predictions",
 				comingSoon: true,
 			},
@@ -179,8 +236,7 @@ export const categories: Category[] = [
 				name: "WHR",
 				fullName: "Waist-to-Hip Ratio",
 				path: "/waist-hip-ratio",
-				color: "text-violet-500",
-				borderColor: "border-violet-200",
+				cardColor: "violet",
 				description: "Assess cardiovascular health risk",
 				comingSoon: true,
 			},
@@ -189,8 +245,7 @@ export const categories: Category[] = [
 				name: "SLEEP",
 				fullName: "Sleep Calculator",
 				path: "/sleep-calculator",
-				color: "text-indigo-500",
-				borderColor: "border-indigo-200",
+				cardColor: "indigo",
 				description: "Optimal sleep duration by age",
 				comingSoon: true,
 			},

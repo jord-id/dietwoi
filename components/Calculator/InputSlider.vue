@@ -1,6 +1,36 @@
 <script setup lang="ts">
-import type { CalculatorColor } from '~/types/calculator'
+/**
+ * InputSlider - Accessible range slider with numeric input for calculator values.
+ *
+ * Features:
+ * - Dual input: slider for quick adjustment + number input for precise values
+ * - Free typing allowed in number input, clamped on blur
+ * - Visual feedback for out-of-range values
+ * - Full ARIA support with valuemin/max/now/text
+ * - Keyboard accessible with focus-visible styling
+ * - Retro pixel-styled custom thumb
+ *
+ * @example
+ * ```vue
+ * <InputSlider
+ *   v-model="weight"
+ *   :min="30" :max="200"
+ *   label="Weight" unit="kg"
+ *   color="teal"
+ * />
+ * ```
+ */
+import { type CalculatorColor, getColorStyles } from '~/types/calculator'
 
+/**
+ * @property modelValue - Current numeric value (v-model)
+ * @property min - Minimum allowed value
+ * @property max - Maximum allowed value
+ * @property step - Step increment for slider (default: 1)
+ * @property label - Display label for the input
+ * @property unit - Unit suffix displayed next to value (e.g., "kg", "cm")
+ * @property color - Theme color from CalculatorColor palette (default: "orange")
+ */
 interface Props {
   modelValue: number
   min: number
@@ -25,6 +55,11 @@ const localValue = ref(String(props.modelValue))
 const isFocused = ref(false)
 const isOutOfRange = ref(false)
 
+// Generate unique IDs for accessibility
+const inputId = useId()
+const sliderId = useId()
+const labelId = useId()
+
 // Sync local value when modelValue changes externally (e.g., from slider)
 watch(() => props.modelValue, (newVal) => {
   if (!isFocused.value) {
@@ -32,20 +67,8 @@ watch(() => props.modelValue, (newVal) => {
   }
 })
 
-// All color classes
-const colorClasses: Record<CalculatorColor, { bg: string; thumb: string; text: string; border: string }> = {
-  orange: { bg: 'bg-orange-400', thumb: 'bg-orange-500', text: 'text-orange-600', border: 'border-orange-400' },
-  purple: { bg: 'bg-purple-400', thumb: 'bg-purple-500', text: 'text-purple-600', border: 'border-purple-400' },
-  teal: { bg: 'bg-teal-400', thumb: 'bg-teal-500', text: 'text-teal-600', border: 'border-teal-400' },
-  blue: { bg: 'bg-blue-400', thumb: 'bg-blue-500', text: 'text-blue-600', border: 'border-blue-400' },
-  amber: { bg: 'bg-amber-400', thumb: 'bg-amber-500', text: 'text-amber-600', border: 'border-amber-400' },
-  pink: { bg: 'bg-pink-400', thumb: 'bg-pink-500', text: 'text-pink-600', border: 'border-pink-400' },
-  red: { bg: 'bg-red-400', thumb: 'bg-red-500', text: 'text-red-600', border: 'border-red-400' },
-  green: { bg: 'bg-green-400', thumb: 'bg-green-500', text: 'text-green-600', border: 'border-green-400' },
-  cyan: { bg: 'bg-cyan-400', thumb: 'bg-cyan-500', text: 'text-cyan-600', border: 'border-cyan-400' },
-}
-
-const colors = computed(() => colorClasses[props.color] || colorClasses.orange)
+// Get colors from centralized config
+const styles = computed(() => getColorStyles(props.color))
 
 const percentage = computed(() => {
   return ((props.modelValue - props.min) / (props.max - props.min)) * 100
@@ -95,70 +118,89 @@ const handleFocus = () => {
 </script>
 
 <template>
-  <div class="space-y-4">
+  <div class="space-y-4" role="group" :aria-labelledby="labelId">
     <!-- Label row -->
     <div class="flex items-center justify-between">
-      <label class="font-pixel text-xs sm:text-sm text-gray-700 tracking-wide">{{ label }}</label>
+      <label
+        :id="labelId"
+        :for="inputId"
+        class="font-pixel text-xs sm:text-sm text-gray-700 tracking-wide"
+      >
+        {{ label }}
+      </label>
       <div class="flex items-center gap-2">
         <!-- Number input with retro styling -->
         <div class="relative">
           <input
+            :id="inputId"
             type="number"
             :value="localValue"
             :min="min"
             :max="max"
             :step="step"
-            class="w-24 sm:w-28 px-3 py-2.5 text-right font-game text-lg sm:text-xl font-bold border-2 bg-white focus:outline-none"
+            :aria-label="`${label} value in ${unit}`"
+            :aria-invalid="isOutOfRange"
+            :aria-describedby="isOutOfRange ? `${inputId}-error` : undefined"
+            class="w-24 sm:w-28 px-3 py-2.5 text-right font-game text-lg sm:text-xl font-bold border-2 bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
             :class="[
-              isOutOfRange ? 'border-red-400 text-red-600' : colors.border,
-              colors.text
+              isOutOfRange ? 'border-red-400 text-red-600 focus-visible:ring-red-400' : [styles.border400, 'focus-visible:ring-current'],
+              styles.text600
             ]"
             @input="handleNumberInput"
             @blur="handleBlur"
             @focus="handleFocus"
           >
         </div>
-        <span class="font-game text-sm sm:text-base text-gray-500">{{ unit }}</span>
+        <span class="font-game text-sm sm:text-base text-gray-500" aria-hidden="true">{{ unit }}</span>
       </div>
     </div>
 
     <!-- Slider track -->
     <div class="relative h-4">
       <!-- Track background with pixel styling -->
-      <div class="absolute inset-0 bg-gray-200 border border-gray-300">
+      <div class="absolute inset-0 bg-gray-200 border border-gray-300" aria-hidden="true">
         <!-- Filled portion -->
         <div
           class="h-full"
-          :class="colors.bg"
+          :class="styles.bg400"
           :style="{ width: `${percentage}%` }"
         />
       </div>
 
-      <!-- Hidden range input -->
+      <!-- Range input with ARIA -->
       <input
+        :id="sliderId"
         type="range"
         :value="modelValue"
         :min="min"
         :max="max"
         :step="step"
-        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+        :aria-label="`${label} slider`"
+        :aria-valuemin="min"
+        :aria-valuemax="max"
+        :aria-valuenow="modelValue"
+        :aria-valuetext="`${modelValue} ${unit}`"
+        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer focus-visible:opacity-100"
         @input="handleSliderInput"
       >
 
-      <!-- Custom thumb - pixel square style -->
+      <!-- Custom thumb - pixel square style (decorative) -->
       <div
         class="absolute top-1/2 -translate-y-1/2 w-6 h-6 border-2 border-white shadow-md pointer-events-none"
-        :class="colors.thumb"
+        :class="styles.bg500"
         :style="{ left: `calc(${percentage}% - 12px)` }"
+        aria-hidden="true"
       />
     </div>
 
     <!-- Range info -->
-    <div class="flex justify-between items-center">
+    <div class="flex justify-between items-center" aria-hidden="true">
       <span class="font-pixel text-[10px] sm:text-xs text-gray-400">{{ min }}</span>
       <span
         v-if="isOutOfRange"
+        :id="`${inputId}-error`"
         class="font-pixel text-[10px] sm:text-xs text-red-500 animate-pulse"
+        role="alert"
       >
         RANGE: {{ min }}-{{ max }}
       </span>

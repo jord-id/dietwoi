@@ -44,16 +44,24 @@ const inputs = ref<Record<string, number | string | boolean>>({
   breastfeeding: false,
 })
 
+// Type-safe accessors (centralized type narrowing)
+const weight = computed(() => Number(inputs.value.weight))
+const activityLevel = computed(() => inputs.value.activityLevel as ActivityLevel)
+const climate = computed(() => inputs.value.climate as ClimateLevel)
+const highProtein = computed(() => Boolean(inputs.value.highProtein))
+const pregnant = computed(() => Boolean(inputs.value.pregnant))
+const breastfeeding = computed(() => Boolean(inputs.value.breastfeeding))
+
 const result = ref<WaterIntakeResult | null>(null)
 
 const calculateWater = () => {
   result.value = calculate({
-    weight: inputs.value.weight as number,
-    activityLevel: inputs.value.activityLevel as ActivityLevel,
-    climate: inputs.value.climate as ClimateLevel,
-    highProtein: inputs.value.highProtein as boolean,
-    pregnant: inputs.value.pregnant as boolean,
-    breastfeeding: inputs.value.breastfeeding as boolean,
+    weight: weight.value,
+    activityLevel: activityLevel.value,
+    climate: climate.value,
+    highProtein: highProtein.value,
+    pregnant: pregnant.value,
+    breastfeeding: breastfeeding.value,
   })
 }
 
@@ -178,7 +186,7 @@ watch(inputs, calculateWater, { deep: true })
           <div class="space-y-2">
             <div class="relative flex justify-between items-center p-3 border-2 border-cyan-200 bg-white">
               <div class="absolute left-0 top-0 bottom-0 w-1 bg-cyan-500" />
-              <span class="pl-2 font-game text-sm text-gray-600">Baseline ({{ inputs.weight }}kg)</span>
+              <span class="pl-2 font-game text-sm text-gray-600">Baseline ({{ weight }}kg)</span>
               <span class="font-game text-sm font-semibold text-cyan-700">{{ result.baseline }} ml</span>
             </div>
             <div v-if="result.adjustments.exercise > 0" class="relative flex justify-between items-center p-3 border-2 border-cyan-200 bg-white">

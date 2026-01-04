@@ -35,31 +35,19 @@ const config: CalculatorConfig = {
   ],
 }
 
-// Calculator
+// Calculator setup using shared composable
 const { calculate } = useTdee()
 
-const inputs = ref<Record<string, number | string>>({
-  gender: 'male',
-  weight: 70,
-  height: 170,
-  age: 30,
-  activityLevel: 'moderate',
-})
-
-const result = ref<TdeeResult | null>(null)
-
-const calculateTdee = () => {
-  result.value = calculate({
-    weight: inputs.value.weight as number,
-    height: inputs.value.height as number,
-    age: inputs.value.age as number,
-    gender: inputs.value.gender as 'male' | 'female',
-    activityLevel: inputs.value.activityLevel as ActivityLevel,
+const { inputs, result } = useCalculatorSetup<TdeeResult>(
+  config,
+  (i) => calculate({
+    weight: Number(i.weight),
+    height: Number(i.height),
+    age: Number(i.age),
+    gender: String(i.gender) as 'male' | 'female',
+    activityLevel: String(i.activityLevel) as ActivityLevel,
   })
-}
-
-onMounted(calculateTdee)
-watch(inputs, calculateTdee, { deep: true })
+)
 
 // Calorie goals
 const calorieGoals = computed(() => {
