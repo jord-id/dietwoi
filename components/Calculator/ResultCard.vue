@@ -1,6 +1,36 @@
 <script setup lang="ts">
+/**
+ * ResultCard - Display card for calculator results with gradient styling.
+ *
+ * Features:
+ * - Gradient accent bar at top matching calculator theme
+ * - Gradient text for the main value
+ * - Optional unit suffix and subtitle
+ * - Three size variants (sm, md, lg)
+ * - Decorative corner accents
+ *
+ * @example
+ * ```vue
+ * <ResultCard
+ *   title="Your BMI"
+ *   :value="24.5"
+ *   unit="kg/m²"
+ *   subtitle="Normal weight"
+ *   color="teal"
+ *   size="lg"
+ * />
+ * ```
+ */
 import { type CalculatorColor, getColorStyles } from '~/types/calculator'
 
+/**
+ * @property title - Label displayed above the value
+ * @property value - Main result value (string or number)
+ * @property unit - Optional unit suffix (e.g., "kg/m²", "kcal")
+ * @property subtitle - Optional description below the value
+ * @property color - Theme color from CalculatorColor palette (default: "orange")
+ * @property size - Text size variant: "sm" | "md" | "lg" (default: "md")
+ */
 interface Props {
   title: string
   value: string | number

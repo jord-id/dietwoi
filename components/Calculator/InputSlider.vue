@@ -1,6 +1,36 @@
 <script setup lang="ts">
+/**
+ * InputSlider - Accessible range slider with numeric input for calculator values.
+ *
+ * Features:
+ * - Dual input: slider for quick adjustment + number input for precise values
+ * - Free typing allowed in number input, clamped on blur
+ * - Visual feedback for out-of-range values
+ * - Full ARIA support with valuemin/max/now/text
+ * - Keyboard accessible with focus-visible styling
+ * - Retro pixel-styled custom thumb
+ *
+ * @example
+ * ```vue
+ * <InputSlider
+ *   v-model="weight"
+ *   :min="30" :max="200"
+ *   label="Weight" unit="kg"
+ *   color="teal"
+ * />
+ * ```
+ */
 import { type CalculatorColor, getColorStyles } from '~/types/calculator'
 
+/**
+ * @property modelValue - Current numeric value (v-model)
+ * @property min - Minimum allowed value
+ * @property max - Maximum allowed value
+ * @property step - Step increment for slider (default: 1)
+ * @property label - Display label for the input
+ * @property unit - Unit suffix displayed next to value (e.g., "kg", "cm")
+ * @property color - Theme color from CalculatorColor palette (default: "orange")
+ */
 interface Props {
   modelValue: number
   min: number

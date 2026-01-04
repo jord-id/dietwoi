@@ -297,7 +297,7 @@ provide("navVisible", navVisible);
 							WEB_NAME
 						}}</span>
 					</div>
-					<p class="font-game text-xs text-gray-500 text-center">
+					<p class="font-game text-xs text-gray-400 text-center">
 						&copy; {{ new Date().getFullYear() }} Dietwoi. For informational
 						purposes only.
 					</p>

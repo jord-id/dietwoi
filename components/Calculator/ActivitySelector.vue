@@ -1,7 +1,33 @@
 <script setup lang="ts">
+/**
+ * ActivitySelector - Accessible radio group for activity level selection.
+ *
+ * Features:
+ * - Five activity levels with TDEE multipliers (1.2x - 1.9x)
+ * - Full keyboard navigation (arrows, Home, End, Enter, Space)
+ * - ARIA radiogroup with descriptive labels
+ * - Visual selection indicator and multiplier badge
+ * - Each option shows name, description, and multiplier
+ *
+ * Activity Levels:
+ * - Sedentary (1.2x): Little or no exercise
+ * - Light (1.375x): Light exercise 1-3 days/week
+ * - Moderate (1.55x): Moderate exercise 3-5 days/week
+ * - Very Active (1.725x): Hard exercise 6-7 days/week
+ * - Athlete (1.9x): Very hard exercise or physical job
+ *
+ * @example
+ * ```vue
+ * <ActivitySelector v-model="activityLevel" color="blue" />
+ * ```
+ */
 import type { ActivityLevel } from '~/composables/useCalculations'
 import { type CalculatorColor, getColorStyles } from '~/types/calculator'
 
+/**
+ * @property color - Theme color from CalculatorColor palette (default: "blue")
+ * @model ActivityLevel - Selected activity level (v-model)
+ */
 interface Props {
   color?: CalculatorColor
 }

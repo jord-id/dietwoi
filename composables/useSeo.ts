@@ -5,8 +5,11 @@ export interface SeoConfig {
   description: string
   path: string
   image?: string
+  imageAlt?: string
   type?: 'website' | 'article'
   noindex?: boolean
+  author?: string
+  keywords?: string[]
 }
 
 export interface CalculatorSchema {
@@ -28,15 +31,20 @@ export function useSeo(config: SeoConfig) {
   const imageUrl = config.image ? `${siteUrl}${config.image}` : `${siteUrl}/og-image.png`
   const fullTitle = config.path === '/' ? config.title : `${config.title} | ${siteName}`
 
+  const imageAlt = config.imageAlt || `${config.title} - ${siteName}`
+
   useSeoMeta({
     // Basic meta
     title: fullTitle,
     description: config.description,
+    author: config.author || 'Dietwoi',
+    keywords: config.keywords?.join(', '),
 
     // Open Graph
     ogTitle: fullTitle,
     ogDescription: config.description,
     ogImage: imageUrl,
+    ogImageAlt: imageAlt,
     ogUrl: fullUrl,
     ogType: config.type || 'website',
     ogSiteName: siteName,
@@ -46,6 +54,7 @@ export function useSeo(config: SeoConfig) {
     twitterTitle: fullTitle,
     twitterDescription: config.description,
     twitterImage: imageUrl,
+    twitterImageAlt: imageAlt,
 
     // Robots
     robots: config.noindex ? 'noindex, nofollow' : 'index, follow',

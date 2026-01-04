@@ -1,6 +1,25 @@
 <script setup lang="ts">
+/**
+ * GenderSelector - Accessible radio button group for gender selection.
+ *
+ * Features:
+ * - Two-option button group (male/female)
+ * - Full keyboard navigation (arrow keys, Enter, Space)
+ * - ARIA radiogroup with proper checked states
+ * - Visual selection indicator with accent color
+ * - Icon + text labels for each option
+ *
+ * @example
+ * ```vue
+ * <GenderSelector v-model="gender" color="teal" />
+ * ```
+ */
 import { type CalculatorColor, getColorStyles } from '~/types/calculator'
 
+/**
+ * @property modelValue - Selected gender value (v-model): "male" | "female"
+ * @property color - Theme color from CalculatorColor palette (default: "orange")
+ */
 interface Props {
   modelValue: 'male' | 'female'
   color?: CalculatorColor

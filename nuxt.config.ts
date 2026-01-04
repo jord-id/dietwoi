@@ -60,6 +60,11 @@ export default defineNuxtConfig({
 		strict: true,
 	},
 
+	// Experimental features
+	experimental: {
+		appManifest: false,
+	},
+
 	// Development tools
 	devtools: { enabled: true },
 

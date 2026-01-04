@@ -142,7 +142,13 @@ const BMI_RANGES = {
   normal: { min: 18.5, max: 24.9, label: 'Normal' },
   overweight: { min: 25, max: 29.9, label: 'Overweight' },
   obese: { min: 30, label: 'Obese' },
-}
+} as const
+
+/** BMI category key type */
+export type BmiCategory = keyof typeof BMI_RANGES
+
+/** BMI ranges type */
+export type BmiRanges = typeof BMI_RANGES
 
 // Body fat ranges by gender
 const BODY_FAT_RANGES = {
@@ -198,7 +204,11 @@ export function useBmi() {
     return BMI_RANGES[category]
   }
 
-  return { calculate, getCategoryInfo, ranges: BMI_RANGES }
+  return {
+    calculate,
+    getCategoryInfo,
+    ranges: BMI_RANGES as BmiRanges,
+  }
 }
 
 /**
