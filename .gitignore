@@ -4,8 +4,11 @@
 .nitro
 .cache
 dist
+
+# Deploy scripts (contains infrastructure details)
+/docs
 scripts
-docs
+deployments.log
 
 # Node dependencies
 node_modules
