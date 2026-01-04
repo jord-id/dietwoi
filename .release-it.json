@@ -2,7 +2,9 @@
   "git": {
     "commitMessage": "chore: release v${version}",
     "tagName": "v${version}",
-    "tagAnnotation": "Release v${version}"
+    "tagAnnotation": "Release v${version}",
+    "push": true,
+    "pushArgs": ["--follow-tags"]
   },
   "github": {
     "release": true,
@@ -32,6 +34,14 @@
   },
   "hooks": {
     "before:init": ["bun run lint"],
-    "after:bump": ["bun run build"]
+    "after:bump": ["bun run build"],
+    "after:release": [
+      "git checkout main",
+      "git pull origin main --rebase",
+      "git merge development --no-edit",
+      "git push origin main",
+      "git checkout development",
+      "echo '\n✅ Released ${version} and synced to main branch'"
+    ]
   }
 }
