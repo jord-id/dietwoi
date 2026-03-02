@@ -38,7 +38,7 @@ export const footerCategories: FooterCategory[] = [
     ],
   },
   {
-    title: 'STRENGTH',
+    title: 'FITNESS',
     items: [
       { name: 'One Rep Max', path: '/one-rep-max' },
     ],
