@@ -58,4 +58,14 @@ export const footerCategories: FooterCategory[] = [
       { name: 'Pace Calculator', path: '/pace-calculator' },
     ],
   },
+  {
+    title: 'HEALTH',
+    items: [
+      { name: 'Blood Pressure', path: '/blood-pressure' },
+      { name: 'Cholesterol', path: '/cholesterol' },
+      { name: 'Diabetes Risk', path: '/diabetes-risk' },
+      { name: 'Pregnancy Weight', path: '/pregnancy-weight' },
+      { name: 'Child Growth', path: '/child-growth' },
+    ],
+  },
 ]

@@ -322,7 +322,6 @@ export const categories: Category[] = [
 				path: "/blood-pressure",
 				cardColor: "red",
 				description: "Check blood pressure category",
-				comingSoon: true,
 			},
 			{
 				id: "cholesterol",
@@ -331,7 +330,6 @@ export const categories: Category[] = [
 				path: "/cholesterol",
 				cardColor: "amber",
 				description: "Assess cholesterol risk ratios",
-				comingSoon: true,
 			},
 			{
 				id: "diabetes-risk",
@@ -340,7 +338,6 @@ export const categories: Category[] = [
 				path: "/diabetes-risk",
 				cardColor: "green",
 				description: "FINDRISC diabetes risk score",
-				comingSoon: true,
 			},
 			{
 				id: "pregnancy-weight",
@@ -349,7 +346,6 @@ export const categories: Category[] = [
 				path: "/pregnancy-weight",
 				cardColor: "pink",
 				description: "Recommended pregnancy weight gain",
-				comingSoon: true,
 			},
 			{
 				id: "child-growth",
@@ -358,7 +354,6 @@ export const categories: Category[] = [
 				path: "/child-growth",
 				cardColor: "cyan",
 				description: "Growth percentiles by age",
-				comingSoon: true,
 			},
 		],
 	},
