@@ -192,7 +192,6 @@ export const categories: Category[] = [
 				path: "/calorie-deficit",
 				cardColor: "green",
 				description: "Target calories for weight goals",
-				comingSoon: true,
 			},
 			{
 				id: "protein",
@@ -201,7 +200,6 @@ export const categories: Category[] = [
 				path: "/protein",
 				cardColor: "red",
 				description: "Optimal protein intake for your goals",
-				comingSoon: true,
 			},
 			{
 				id: "meal-calories",
@@ -210,7 +208,6 @@ export const categories: Category[] = [
 				path: "/meal-calories",
 				cardColor: "amber",
 				description: "Distribute calories across meals",
-				comingSoon: true,
 			},
 		],
 	},

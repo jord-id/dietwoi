@@ -32,6 +32,9 @@ export const footerCategories: FooterCategory[] = [
       { name: 'TDEE', path: '/tdee' },
       { name: 'Calories', path: '/calories' },
       { name: 'Macros', path: '/macros' },
+      { name: 'Calorie Deficit', path: '/calorie-deficit' },
+      { name: 'Protein', path: '/protein' },
+      { name: 'Meal Calories', path: '/meal-calories' },
     ],
   },
   {

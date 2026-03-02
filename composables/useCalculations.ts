@@ -819,3 +819,193 @@ export function useMetabolicAge() {
 
   return { calculate }
 }
+
+// ─── Calorie Deficit ──────────────────────────────────────────────────────
+
+export type WeightGoal = 'slow-loss' | 'moderate-loss' | 'aggressive-loss' | 'slow-gain' | 'standard-gain'
+
+export interface CalorieDeficitInput {
+  weight: number
+  height: number
+  age: number
+  gender: 'male' | 'female'
+  activityLevel: ActivityLevel
+  goal: WeightGoal
+}
+
+export interface CalorieDeficitResult {
+  tdee: number
+  targetCalories: number
+  deficit: number
+  weeklyChange: number
+  minimumSafe: number
+  isBelowMinimum: boolean
+}
+
+/**
+ * Calculate Calorie Deficit / Surplus
+ * Adjusts TDEE based on weight goal with safety minimums
+ */
+export function useCalorieDeficit() {
+  const GOAL_ADJUSTMENTS: Record<WeightGoal, { calories: number; weeklyKg: number }> = {
+    'slow-loss': { calories: -250, weeklyKg: -0.25 },
+    'moderate-loss': { calories: -500, weeklyKg: -0.5 },
+    'aggressive-loss': { calories: -750, weeklyKg: -0.75 },
+    'slow-gain': { calories: 250, weeklyKg: 0.25 },
+    'standard-gain': { calories: 500, weeklyKg: 0.5 },
+  }
+
+  const calculate = (input: CalorieDeficitInput): CalorieDeficitResult => {
+    validateRange(input.weight, 20, 500, 'Weight')
+    validateRange(input.height, 50, 300, 'Height')
+    validateRange(input.age, 15, 100, 'Age')
+    validateGender(input.gender)
+
+    const { calculate: calculateTdee } = useTdee()
+    const tdeeResult = calculateTdee(input)
+    const adjustment = GOAL_ADJUSTMENTS[input.goal]
+    const targetCalories = tdeeResult.tdee + adjustment.calories
+    const minimumSafe = input.gender === 'female' ? 1200 : 1500
+
+    return {
+      tdee: tdeeResult.tdee,
+      targetCalories: Math.max(targetCalories, minimumSafe),
+      deficit: -adjustment.calories,
+      weeklyChange: adjustment.weeklyKg,
+      minimumSafe,
+      isBelowMinimum: targetCalories < minimumSafe,
+    }
+  }
+
+  return { calculate, goals: GOAL_ADJUSTMENTS }
+}
+
+// ─── Protein ──────────────────────────────────────────────────────────────
+
+export type ProteinGoal = 'sedentary' | 'recreational' | 'endurance' | 'strength-maintain' | 'strength-gain' | 'deficit' | 'elderly'
+
+export interface ProteinInput {
+  weight: number
+  goal: ProteinGoal
+}
+
+export interface ProteinResult {
+  dailyGrams: { min: number; max: number }
+  perMeal: { min: number; max: number }
+  perKg: { min: number; max: number }
+  goalLabel: string
+}
+
+/**
+ * Calculate Protein Intake
+ * Based on ISSN position stand ranges per body weight and goal
+ */
+export function useProtein() {
+  const PROTEIN_RANGES: Record<ProteinGoal, { min: number; max: number; label: string }> = {
+    'sedentary': { min: 0.8, max: 0.8, label: 'Sedentary Adult' },
+    'recreational': { min: 1.0, max: 1.2, label: 'Recreational Exerciser' },
+    'endurance': { min: 1.2, max: 1.4, label: 'Endurance Athlete' },
+    'strength-maintain': { min: 1.4, max: 1.6, label: 'Strength (Maintenance)' },
+    'strength-gain': { min: 1.6, max: 2.2, label: 'Strength (Muscle Gain)' },
+    'deficit': { min: 1.8, max: 2.4, label: 'Caloric Deficit (Preserve Muscle)' },
+    'elderly': { min: 1.0, max: 1.2, label: 'Elderly (65+)' },
+  }
+
+  const calculate = (input: ProteinInput): ProteinResult => {
+    validateRange(input.weight, 20, 500, 'Weight')
+    const range = PROTEIN_RANGES[input.goal]
+    const minGrams = Math.round(input.weight * range.min)
+    const maxGrams = Math.round(input.weight * range.max)
+
+    return {
+      dailyGrams: { min: minGrams, max: maxGrams },
+      perMeal: { min: Math.round(minGrams / 4), max: Math.round(maxGrams / 4) },
+      perKg: { min: range.min, max: range.max },
+      goalLabel: range.label,
+    }
+  }
+
+  return { calculate, ranges: PROTEIN_RANGES }
+}
+
+// ─── Meal Calories ────────────────────────────────────────────────────────
+
+export type MealPattern = 'traditional' | 'large-lunch' | 'intermittent' | 'five-meals'
+
+export interface MealCaloriesInput {
+  weight: number
+  height: number
+  age: number
+  gender: 'male' | 'female'
+  activityLevel: ActivityLevel
+  pattern: MealPattern
+}
+
+export interface MealCaloriesResult {
+  tdee: number
+  pattern: MealPattern
+  meals: { name: string; calories: number; percentage: number }[]
+}
+
+/**
+ * Calculate Meal Calorie Distribution
+ * Distributes TDEE across meals based on eating pattern
+ */
+export function useMealCalories() {
+  const PATTERNS: Record<MealPattern, { label: string; meals: { name: string; percentage: number }[] }> = {
+    'traditional': {
+      label: 'Traditional (3 meals + snack)',
+      meals: [
+        { name: 'Breakfast', percentage: 25 },
+        { name: 'Lunch', percentage: 35 },
+        { name: 'Dinner', percentage: 30 },
+        { name: 'Snacks', percentage: 10 },
+      ],
+    },
+    'large-lunch': {
+      label: 'Large Lunch',
+      meals: [
+        { name: 'Breakfast', percentage: 20 },
+        { name: 'Lunch', percentage: 40 },
+        { name: 'Dinner', percentage: 30 },
+        { name: 'Snacks', percentage: 10 },
+      ],
+    },
+    'intermittent': {
+      label: 'Intermittent Fasting (16:8)',
+      meals: [
+        { name: 'Lunch', percentage: 45 },
+        { name: 'Dinner', percentage: 45 },
+        { name: 'Snacks', percentage: 10 },
+      ],
+    },
+    'five-meals': {
+      label: '5 Meals',
+      meals: [
+        { name: 'Breakfast', percentage: 20 },
+        { name: 'Lunch', percentage: 25 },
+        { name: 'Dinner', percentage: 25 },
+        { name: 'Snack 1', percentage: 15 },
+        { name: 'Snack 2', percentage: 15 },
+      ],
+    },
+  }
+
+  const calculate = (input: MealCaloriesInput): MealCaloriesResult => {
+    const { calculate: calculateTdee } = useTdee()
+    const tdeeResult = calculateTdee(input)
+
+    const pattern = PATTERNS[input.pattern]
+    return {
+      tdee: tdeeResult.tdee,
+      pattern: input.pattern,
+      meals: pattern.meals.map(m => ({
+        name: m.name,
+        calories: Math.round(tdeeResult.tdee * m.percentage / 100),
+        percentage: m.percentage,
+      })),
+    }
+  }
+
+  return { calculate, patterns: PATTERNS }
+}
