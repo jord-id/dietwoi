@@ -20,6 +20,9 @@ export const footerCategories: FooterCategory[] = [
       { name: 'Body Fat', path: '/body-fat' },
       { name: 'Ideal Weight', path: '/ideal-weight' },
       { name: 'Lean Body Mass', path: '/lean-body-mass' },
+      { name: 'Waist-Hip Ratio', path: '/waist-hip-ratio' },
+      { name: 'Waist-Height Ratio', path: '/waist-height-ratio' },
+      { name: 'Metabolic Age', path: '/metabolic-age' },
     ],
   },
   {

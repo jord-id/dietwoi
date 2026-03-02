@@ -640,3 +640,182 @@ export function useWaterIntake() {
 
   return { calculate, exerciseAdjustments: EXERCISE_ADJUSTMENTS }
 }
+
+// ─── Waist-to-Hip Ratio ────────────────────────────────────────────────────
+
+export interface WhrInput {
+  waist: number // cm
+  hip: number // cm
+  gender: 'male' | 'female'
+}
+
+export interface WhrResult {
+  ratio: number
+  category: 'low' | 'moderate' | 'high'
+  categoryLabel: string
+}
+
+/**
+ * Calculate Waist-to-Hip Ratio
+ * Formula: WHR = waist circumference / hip circumference
+ * Risk thresholds per WHO guidelines
+ */
+export function useWaistHipRatio() {
+  const calculate = (input: WhrInput): WhrResult => {
+    validateRange(input.waist, 40, 200, 'Waist')
+    validateRange(input.hip, 40, 200, 'Hip')
+    validateGender(input.gender)
+
+    const ratio = input.waist / input.hip
+
+    let category: WhrResult['category'] = 'high'
+    if (input.gender === 'male') {
+      if (ratio < 0.90) category = 'low'
+      else if (ratio < 1.0) category = 'moderate'
+    } else {
+      if (ratio < 0.80) category = 'low'
+      else if (ratio < 0.85) category = 'moderate'
+    }
+
+    const labels = { low: 'Low Risk', moderate: 'Moderate Risk', high: 'High Risk' }
+
+    return {
+      ratio: Math.round(ratio * 100) / 100,
+      category,
+      categoryLabel: labels[category],
+    }
+  }
+
+  return { calculate }
+}
+
+// ─── Waist-to-Height Ratio ─────────────────────────────────────────────────
+
+export interface WhtRInput {
+  waist: number // cm
+  height: number // cm
+}
+
+export interface WhtRResult {
+  ratio: number
+  category: 'underweight' | 'healthy' | 'increased' | 'high'
+  categoryLabel: string
+}
+
+/**
+ * Calculate Waist-to-Height Ratio
+ * Formula: WHtR = waist circumference / height
+ * Boundary value 0.5 ("keep your waist under half your height")
+ */
+export function useWaistHeightRatio() {
+  const calculate = (input: WhtRInput): WhtRResult => {
+    validateRange(input.waist, 40, 200, 'Waist')
+    validateRange(input.height, 50, 300, 'Height')
+
+    const ratio = input.waist / input.height
+
+    let category: WhtRResult['category'] = 'high'
+    if (ratio < 0.4) category = 'underweight'
+    else if (ratio < 0.5) category = 'healthy'
+    else if (ratio < 0.6) category = 'increased'
+
+    const labels = {
+      underweight: 'Underweight Risk',
+      healthy: 'Healthy',
+      increased: 'Increased Risk',
+      high: 'High Risk',
+    }
+
+    return {
+      ratio: Math.round(ratio * 100) / 100,
+      category,
+      categoryLabel: labels[category],
+    }
+  }
+
+  return { calculate }
+}
+
+// ─── Metabolic Age ─────────────────────────────────────────────────────────
+
+export interface MetabolicAgeInput {
+  weight: number // kg
+  height: number // cm
+  age: number
+  gender: 'male' | 'female'
+}
+
+export interface MetabolicAgeResult {
+  metabolicAge: number
+  actualAge: number
+  bmr: number
+  difference: number // positive = older than actual, negative = younger
+  assessment: string
+}
+
+/**
+ * Estimate Metabolic Age
+ * Compares personal BMR (Mifflin-St Jeor) against age-group averages
+ * to interpolate a "metabolic age"
+ */
+export function useMetabolicAge() {
+  const AVG_BMR: Record<'male' | 'female', { age: number; bmr: number }[]> = {
+    male: [
+      { age: 20, bmr: 1800 }, { age: 25, bmr: 1775 }, { age: 30, bmr: 1750 },
+      { age: 35, bmr: 1725 }, { age: 40, bmr: 1700 }, { age: 45, bmr: 1675 },
+      { age: 50, bmr: 1650 }, { age: 55, bmr: 1625 }, { age: 60, bmr: 1600 },
+      { age: 65, bmr: 1575 }, { age: 70, bmr: 1550 }, { age: 75, bmr: 1525 },
+      { age: 80, bmr: 1500 },
+    ],
+    female: [
+      { age: 20, bmr: 1450 }, { age: 25, bmr: 1425 }, { age: 30, bmr: 1400 },
+      { age: 35, bmr: 1375 }, { age: 40, bmr: 1350 }, { age: 45, bmr: 1325 },
+      { age: 50, bmr: 1300 }, { age: 55, bmr: 1275 }, { age: 60, bmr: 1250 },
+      { age: 65, bmr: 1225 }, { age: 70, bmr: 1200 }, { age: 75, bmr: 1175 },
+      { age: 80, bmr: 1150 },
+    ],
+  }
+
+  const calculate = (input: MetabolicAgeInput): MetabolicAgeResult => {
+    validateRange(input.weight, 20, 500, 'Weight')
+    validateRange(input.height, 50, 300, 'Height')
+    validateRange(input.age, 15, 100, 'Age')
+    validateGender(input.gender)
+
+    let bmr: number
+    if (input.gender === 'male') {
+      bmr = 10 * input.weight + 6.25 * input.height - 5 * input.age + 5
+    } else {
+      bmr = 10 * input.weight + 6.25 * input.height - 5 * input.age - 161
+    }
+
+    const table = AVG_BMR[input.gender]
+    let metabolicAge = table[0].age
+
+    if (bmr > table[0].bmr) {
+      metabolicAge = Math.max(15, table[0].age - Math.round((bmr - table[0].bmr) / 10))
+    } else if (bmr < table[table.length - 1].bmr) {
+      metabolicAge = table[table.length - 1].age + Math.round((table[table.length - 1].bmr - bmr) / 10)
+    } else {
+      for (let i = 0; i < table.length - 1; i++) {
+        if (bmr <= table[i].bmr && bmr >= table[i + 1].bmr) {
+          const ratio = (table[i].bmr - bmr) / (table[i].bmr - table[i + 1].bmr)
+          metabolicAge = Math.round(table[i].age + ratio * (table[i + 1].age - table[i].age))
+          break
+        }
+      }
+    }
+
+    const difference = metabolicAge - input.age
+    let assessment: string
+    if (difference <= -5) assessment = 'Excellent — significantly younger than actual age'
+    else if (difference < 0) assessment = 'Good — younger than actual age'
+    else if (difference === 0) assessment = 'Average — matches actual age'
+    else if (difference <= 5) assessment = 'Above average — slightly older than actual age'
+    else assessment = 'Consider lifestyle changes to improve metabolic health'
+
+    return { metabolicAge, actualAge: input.age, bmr: Math.round(bmr), difference, assessment }
+  }
+
+  return { calculate }
+}

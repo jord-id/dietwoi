@@ -130,7 +130,6 @@ export const categories: Category[] = [
 				path: "/waist-hip-ratio",
 				cardColor: "violet",
 				description: "Assess cardiovascular health risk",
-				comingSoon: true,
 			},
 			{
 				id: "waist-height-ratio",
@@ -139,7 +138,6 @@ export const categories: Category[] = [
 				path: "/waist-height-ratio",
 				cardColor: "emerald",
 				description: "Simple body composition screening",
-				comingSoon: true,
 			},
 			{
 				id: "metabolic-age",
@@ -148,7 +146,6 @@ export const categories: Category[] = [
 				path: "/metabolic-age",
 				cardColor: "orange",
 				description: "Estimate your metabolic age",
-				comingSoon: true,
 			},
 		],
 	},
