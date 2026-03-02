@@ -230,7 +230,6 @@ export const categories: Category[] = [
 				path: "/sleep-calculator",
 				cardColor: "indigo",
 				description: "Optimal sleep duration by age",
-				comingSoon: true,
 			},
 			{
 				id: "caffeine",
@@ -239,7 +238,6 @@ export const categories: Category[] = [
 				path: "/caffeine",
 				cardColor: "orange",
 				description: "Track daily caffeine consumption",
-				comingSoon: true,
 			},
 			{
 				id: "sodium",
@@ -248,7 +246,6 @@ export const categories: Category[] = [
 				path: "/sodium",
 				cardColor: "cyan",
 				description: "Assess daily sodium levels",
-				comingSoon: true,
 			},
 			{
 				id: "alcohol",
@@ -257,7 +254,6 @@ export const categories: Category[] = [
 				path: "/alcohol",
 				cardColor: "violet",
 				description: "Calculate alcohol units consumed",
-				comingSoon: true,
 			},
 		],
 	},

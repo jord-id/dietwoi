@@ -1009,3 +1009,197 @@ export function useMealCalories() {
 
   return { calculate, patterns: PATTERNS }
 }
+
+// ─── Sleep ────────────────────────────────────────────────────────────────
+
+export interface SleepInput {
+  age: number
+}
+
+export interface SleepResult {
+  recommended: { min: number; max: number }
+  acceptable: { min: number; max: number }
+  notRecommended: { below: number; above: number }
+  ageGroup: string
+}
+
+export function useSleep() {
+  const SLEEP_TABLE = [
+    { minAge: 0, maxAge: 0.25, group: 'Newborn (0-3 mo)', rec: [14, 17], acc: [11, 19] },
+    { minAge: 0.25, maxAge: 1, group: 'Infant (4-11 mo)', rec: [12, 15], acc: [10, 18] },
+    { minAge: 1, maxAge: 3, group: 'Toddler (1-2 yr)', rec: [11, 14], acc: [9, 16] },
+    { minAge: 3, maxAge: 6, group: 'Preschool (3-5 yr)', rec: [10, 13], acc: [8, 14] },
+    { minAge: 6, maxAge: 14, group: 'School Age (6-13 yr)', rec: [9, 11], acc: [7, 12] },
+    { minAge: 14, maxAge: 18, group: 'Teen (14-17 yr)', rec: [8, 10], acc: [7, 11] },
+    { minAge: 18, maxAge: 26, group: 'Young Adult (18-25)', rec: [7, 9], acc: [6, 11] },
+    { minAge: 26, maxAge: 65, group: 'Adult (26-64)', rec: [7, 9], acc: [6, 10] },
+    { minAge: 65, maxAge: 120, group: 'Older Adult (65+)', rec: [7, 8], acc: [5, 9] },
+  ]
+
+  const calculate = (input: SleepInput): SleepResult => {
+    validateRange(input.age, 0, 120, 'Age')
+    const entry = SLEEP_TABLE.find(e => input.age >= e.minAge && input.age < e.maxAge) || SLEEP_TABLE[SLEEP_TABLE.length - 1]
+
+    return {
+      recommended: { min: entry.rec[0], max: entry.rec[1] },
+      acceptable: { min: entry.acc[0], max: entry.acc[1] },
+      notRecommended: { below: entry.acc[0], above: entry.acc[1] },
+      ageGroup: entry.group,
+    }
+  }
+
+  return { calculate }
+}
+
+// ─── Caffeine ─────────────────────────────────────────────────────────────
+
+export interface CaffeineSource {
+  id: string
+  name: string
+  caffeineMg: number
+  servingSize: string
+}
+
+export interface CaffeineInput {
+  servings: Record<string, number>
+  isPregnant: boolean
+}
+
+export interface CaffeineResult {
+  totalMg: number
+  limit: number
+  percentOfLimit: number
+  isOverLimit: boolean
+  breakdown: { name: string; mg: number; servings: number }[]
+}
+
+export function useCaffeine() {
+  const SOURCES: CaffeineSource[] = [
+    { id: 'espresso', name: 'Espresso (30ml)', caffeineMg: 63, servingSize: '30ml' },
+    { id: 'brewed', name: 'Brewed Coffee (240ml)', caffeineMg: 130, servingSize: '240ml' },
+    { id: 'instant', name: 'Instant Coffee (240ml)', caffeineMg: 63, servingSize: '240ml' },
+    { id: 'black-tea', name: 'Black Tea (240ml)', caffeineMg: 47, servingSize: '240ml' },
+    { id: 'green-tea', name: 'Green Tea (240ml)', caffeineMg: 28, servingSize: '240ml' },
+    { id: 'cola', name: 'Cola (355ml)', caffeineMg: 34, servingSize: '355ml' },
+    { id: 'energy-drink', name: 'Energy Drink (250ml)', caffeineMg: 80, servingSize: '250ml' },
+    { id: 'dark-chocolate', name: 'Dark Chocolate (30g)', caffeineMg: 23, servingSize: '30g' },
+  ]
+
+  const calculate = (input: CaffeineInput): CaffeineResult => {
+    const limit = input.isPregnant ? 200 : 400
+    const breakdown: CaffeineResult['breakdown'] = []
+    let totalMg = 0
+
+    for (const source of SOURCES) {
+      const servings = input.servings[source.id] || 0
+      if (servings > 0) {
+        const mg = servings * source.caffeineMg
+        totalMg += mg
+        breakdown.push({ name: source.name, mg, servings })
+      }
+    }
+
+    return {
+      totalMg: Math.round(totalMg),
+      limit,
+      percentOfLimit: Math.round((totalMg / limit) * 100),
+      isOverLimit: totalMg > limit,
+      breakdown,
+    }
+  }
+
+  return { calculate, sources: SOURCES }
+}
+
+// ─── Sodium ───────────────────────────────────────────────────────────────
+
+export interface SodiumInput {
+  sodiumMg: number
+}
+
+export interface SodiumResult {
+  sodiumMg: number
+  saltG: number
+  whoCategory: string
+  ahaCategory: string
+  percentOfWho: number
+  percentOfAha: number
+}
+
+export function useSodium() {
+  const calculate = (input: SodiumInput): SodiumResult => {
+    validateRange(input.sodiumMg, 0, 10000, 'Sodium')
+
+    const saltG = Math.round(input.sodiumMg * 0.0025 * 10) / 10
+
+    let whoCategory: string
+    if (input.sodiumMg <= 2000) whoCategory = 'Within WHO guideline'
+    else if (input.sodiumMg <= 2300) whoCategory = 'Above WHO, within US guideline'
+    else whoCategory = 'Above all guidelines'
+
+    let ahaCategory: string
+    if (input.sodiumMg <= 1500) ahaCategory = 'Ideal (AHA)'
+    else if (input.sodiumMg <= 2300) ahaCategory = 'Acceptable'
+    else ahaCategory = 'Excessive'
+
+    return {
+      sodiumMg: input.sodiumMg,
+      saltG,
+      whoCategory,
+      ahaCategory,
+      percentOfWho: Math.round((input.sodiumMg / 2000) * 100),
+      percentOfAha: Math.round((input.sodiumMg / 1500) * 100),
+    }
+  }
+
+  return { calculate }
+}
+
+// ─── Alcohol ──────────────────────────────────────────────────────────────
+
+export type AlcoholUnitSystem = 'uk' | 'us' | 'au'
+
+export interface AlcoholInput {
+  volumeMl: number
+  abvPercent: number
+  unitSystem: AlcoholUnitSystem
+}
+
+export interface AlcoholResult {
+  units: number
+  unitLabel: string
+  pureAlcoholG: number
+  calories: number
+  weeklyLimit: number
+  percentOfWeekly: number
+}
+
+export function useAlcohol() {
+  const SYSTEMS: Record<AlcoholUnitSystem, { gramsPerUnit: number; label: string; weeklyLimit: number }> = {
+    uk: { gramsPerUnit: 8, label: 'UK Units', weeklyLimit: 14 },
+    us: { gramsPerUnit: 14, label: 'US Standard Drinks', weeklyLimit: 14 },
+    au: { gramsPerUnit: 10, label: 'AU Standard Drinks', weeklyLimit: 10 },
+  }
+
+  const calculate = (input: AlcoholInput): AlcoholResult => {
+    validateRange(input.volumeMl, 1, 5000, 'Volume')
+    validateRange(input.abvPercent, 0.1, 100, 'ABV')
+
+    const pureAlcoholMl = input.volumeMl * (input.abvPercent / 100)
+    const pureAlcoholG = pureAlcoholMl * 0.789
+
+    const system = SYSTEMS[input.unitSystem]
+    const units = pureAlcoholG / system.gramsPerUnit
+
+    return {
+      units: Math.round(units * 10) / 10,
+      unitLabel: system.label,
+      pureAlcoholG: Math.round(pureAlcoholG * 10) / 10,
+      calories: Math.round(pureAlcoholG * 7),
+      weeklyLimit: system.weeklyLimit,
+      percentOfWeekly: Math.round((units / system.weeklyLimit) * 100),
+    }
+  }
+
+  return { calculate, systems: SYSTEMS }
+}

@@ -41,6 +41,10 @@ export const footerCategories: FooterCategory[] = [
     title: 'WELLNESS',
     items: [
       { name: 'Water Intake', path: '/water-intake' },
+      { name: 'Sleep', path: '/sleep-calculator' },
+      { name: 'Caffeine', path: '/caffeine' },
+      { name: 'Sodium', path: '/sodium' },
+      { name: 'Alcohol', path: '/alcohol' },
     ],
   },
   {
