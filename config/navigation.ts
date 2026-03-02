@@ -51,6 +51,11 @@ export const footerCategories: FooterCategory[] = [
     title: 'FITNESS',
     items: [
       { name: 'One Rep Max', path: '/one-rep-max' },
+      { name: 'Calories Burned', path: '/calories-burned' },
+      { name: 'Max Heart Rate', path: '/max-heart-rate' },
+      { name: 'Heart Rate Zones', path: '/heart-rate-zones' },
+      { name: 'VO2 Max', path: '/vo2-max' },
+      { name: 'Pace Calculator', path: '/pace-calculator' },
     ],
   },
 ]

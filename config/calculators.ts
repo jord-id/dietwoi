@@ -276,7 +276,6 @@ export const categories: Category[] = [
 				path: "/calories-burned",
 				cardColor: "orange",
 				description: "Calories burned by activity",
-				comingSoon: true,
 			},
 			{
 				id: "max-heart-rate",
@@ -285,7 +284,6 @@ export const categories: Category[] = [
 				path: "/max-heart-rate",
 				cardColor: "pink",
 				description: "Estimate your maximum heart rate",
-				comingSoon: true,
 			},
 			{
 				id: "heart-rate-zones",
@@ -294,7 +292,6 @@ export const categories: Category[] = [
 				path: "/heart-rate-zones",
 				cardColor: "red",
 				description: "Find your training heart rate zones",
-				comingSoon: true,
 			},
 			{
 				id: "vo2-max",
@@ -303,7 +300,6 @@ export const categories: Category[] = [
 				path: "/vo2-max",
 				cardColor: "emerald",
 				description: "Estimate aerobic fitness level",
-				comingSoon: true,
 			},
 			{
 				id: "pace-calculator",
@@ -312,7 +308,6 @@ export const categories: Category[] = [
 				path: "/pace-calculator",
 				cardColor: "sky",
 				description: "Convert pace, speed & race predictions",
-				comingSoon: true,
 			},
 		],
 	},

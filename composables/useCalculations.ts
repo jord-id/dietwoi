@@ -1203,3 +1203,278 @@ export function useAlcohol() {
 
   return { calculate, systems: SYSTEMS }
 }
+
+// ─── Max Heart Rate ──────────────────────────────────────────────────────
+
+export interface MaxHrInput {
+  age: number
+  gender: 'male' | 'female'
+}
+
+export interface MaxHrResult {
+  traditional: number
+  tanaka: number
+  gellish: number
+  gulati: number | null
+  recommended: number
+}
+
+/**
+ * Calculate Max Heart Rate
+ * Multiple formulas: Traditional (220-age), Tanaka (2001), Gellish, Gulati (women)
+ */
+export function useMaxHeartRate() {
+  const calculate = (input: MaxHrInput): MaxHrResult => {
+    validateRange(input.age, 10, 100, 'Age')
+    validateGender(input.gender)
+
+    const traditional = Math.round(220 - input.age)
+    const tanaka = Math.round(208 - 0.7 * input.age)
+    const gellish = Math.round(207 - 0.7 * input.age)
+    const gulati = input.gender === 'female' ? Math.round(206 - 0.88 * input.age) : null
+    const recommended = input.gender === 'female' ? gulati! : tanaka
+
+    return { traditional, tanaka, gellish, gulati, recommended }
+  }
+
+  return { calculate }
+}
+
+// ─── Heart Rate Zones ────────────────────────────────────────────────────
+
+export interface HrZonesInput {
+  maxHr: number
+  restingHr: number
+}
+
+export interface HrZone {
+  zone: number
+  name: string
+  purpose: string
+  minHr: number
+  maxHr: number
+  minPercent: number
+  maxPercent: number
+}
+
+export interface HrZonesResult {
+  zones: HrZone[]
+  maxHr: number
+  restingHr: number
+  heartRateReserve: number
+}
+
+/**
+ * Calculate Heart Rate Zones
+ * Uses Karvonen method (Heart Rate Reserve) for 5 training zones
+ */
+export function useHeartRateZones() {
+  const ZONES = [
+    { zone: 1, name: 'Recovery', purpose: 'Warm-up, recovery, easy movement', min: 50, max: 60 },
+    { zone: 2, name: 'Fat Burn', purpose: 'Endurance base, fat burning', min: 60, max: 70 },
+    { zone: 3, name: 'Aerobic', purpose: 'Aerobic capacity, cardio fitness', min: 70, max: 80 },
+    { zone: 4, name: 'Threshold', purpose: 'Lactate threshold, race pace', min: 80, max: 90 },
+    { zone: 5, name: 'VO2 Max', purpose: 'Maximum effort, anaerobic', min: 90, max: 100 },
+  ]
+
+  const calculate = (input: HrZonesInput): HrZonesResult => {
+    validateRange(input.maxHr, 100, 250, 'Max Heart Rate')
+    validateRange(input.restingHr, 30, 120, 'Resting Heart Rate')
+    if (input.restingHr >= input.maxHr) {
+      throw new CalculationError('Resting heart rate must be lower than max heart rate')
+    }
+
+    const hrr = input.maxHr - input.restingHr
+    const zones: HrZone[] = ZONES.map(z => ({
+      zone: z.zone, name: z.name, purpose: z.purpose,
+      minHr: Math.round(hrr * (z.min / 100) + input.restingHr),
+      maxHr: Math.round(hrr * (z.max / 100) + input.restingHr),
+      minPercent: z.min, maxPercent: z.max,
+    }))
+
+    return { zones, maxHr: input.maxHr, restingHr: input.restingHr, heartRateReserve: hrr }
+  }
+
+  return { calculate }
+}
+
+// ─── VO2 Max ─────────────────────────────────────────────────────────────
+
+export type Vo2TestType = 'cooper' | 'mile-run' | 'step-test'
+
+export interface Vo2MaxInput {
+  testType: Vo2TestType
+  distanceM?: number
+  timeMin?: number
+  heartRate?: number
+  age?: number
+  gender?: 'male' | 'female'
+}
+
+export interface Vo2MaxResult {
+  vo2max: number
+  testType: Vo2TestType
+  classification: string
+}
+
+/**
+ * Calculate VO2 Max
+ * Supports Cooper 12-min run, 1.5 Mile Run, and Step Test methods
+ */
+export function useVo2Max() {
+  const classify = (vo2: number, age: number, gender: 'male' | 'female'): string => {
+    const thresholds = gender === 'male'
+      ? { excellent: 55, good: 47, average: 39, belowAvg: 31 }
+      : { excellent: 49, good: 41, average: 33, belowAvg: 25 }
+    const ageAdjust = Math.max(0, (age - 30) / 5)
+    if (vo2 > thresholds.excellent - ageAdjust) return 'Excellent'
+    if (vo2 > thresholds.good - ageAdjust) return 'Good'
+    if (vo2 > thresholds.average - ageAdjust) return 'Average'
+    if (vo2 > thresholds.belowAvg - ageAdjust) return 'Below Average'
+    return 'Poor'
+  }
+
+  const calculate = (input: Vo2MaxInput): Vo2MaxResult => {
+    let vo2max: number
+    switch (input.testType) {
+      case 'cooper':
+        if (!input.distanceM) throw new CalculationError('Distance is required for Cooper test')
+        validateRange(input.distanceM, 400, 5000, 'Distance')
+        vo2max = (input.distanceM - 504.9) / 44.73
+        break
+      case 'mile-run':
+        if (!input.timeMin) throw new CalculationError('Time is required for 1.5 mile run test')
+        validateRange(input.timeMin, 5, 30, 'Time')
+        vo2max = 483 / input.timeMin + 3.5
+        break
+      case 'step-test':
+        if (!input.heartRate) throw new CalculationError('Heart rate is required for step test')
+        validateRange(input.heartRate, 40, 200, 'Heart Rate')
+        vo2max = 111.33 - 0.42 * input.heartRate
+        break
+      default:
+        throw new CalculationError('Invalid test type')
+    }
+    return {
+      vo2max: Math.round(vo2max * 10) / 10,
+      testType: input.testType,
+      classification: classify(vo2max, input.age || 30, input.gender || 'male'),
+    }
+  }
+
+  return { calculate }
+}
+
+// ─── Pace Calculator ─────────────────────────────────────────────────────
+
+export interface PaceInput {
+  distanceKm: number
+  timeSeconds: number
+}
+
+export interface PaceResult {
+  paceMinKm: string
+  paceMinMile: string
+  speedKmh: number
+  speedMph: number
+  predictions: { race: string; distance: string; time: string }[]
+}
+
+/**
+ * Calculate Running Pace and Race Predictions
+ * Uses Riegel formula for race time predictions
+ */
+export function usePaceCalculator() {
+  const formatTime = (totalSeconds: number): string => {
+    const hours = Math.floor(totalSeconds / 3600)
+    const minutes = Math.floor((totalSeconds % 3600) / 60)
+    const seconds = Math.round(totalSeconds % 60)
+    if (hours > 0) return `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+    return `${minutes}:${String(seconds).padStart(2, '0')}`
+  }
+
+  const calculate = (input: PaceInput): PaceResult => {
+    validateRange(input.distanceKm, 0.1, 200, 'Distance')
+    validateRange(input.timeSeconds, 10, 86400, 'Time')
+
+    const paceSecondsPerKm = input.timeSeconds / input.distanceKm
+    const paceSecondsPerMile = paceSecondsPerKm * 1.60934
+    const speedKmh = (input.distanceKm / input.timeSeconds) * 3600
+    const speedMph = speedKmh / 1.60934
+
+    const races = [
+      { race: '5K', distanceKm: 5 },
+      { race: '10K', distanceKm: 10 },
+      { race: 'Half Marathon', distanceKm: 21.0975 },
+      { race: 'Marathon', distanceKm: 42.195 },
+    ]
+
+    const predictions = races.map(r => ({
+      race: r.race,
+      distance: `${r.distanceKm} km`,
+      time: formatTime(input.timeSeconds * Math.pow(r.distanceKm / input.distanceKm, 1.06)),
+    }))
+
+    return {
+      paceMinKm: formatTime(paceSecondsPerKm),
+      paceMinMile: formatTime(paceSecondsPerMile),
+      speedKmh: Math.round(speedKmh * 10) / 10,
+      speedMph: Math.round(speedMph * 10) / 10,
+      predictions,
+    }
+  }
+
+  return { calculate }
+}
+
+// ─── Calories Burned ─────────────────────────────────────────────────────
+
+export interface CaloriesBurnedInput {
+  activityMet: number
+  weight: number
+  durationMin: number
+}
+
+export interface CaloriesBurnedResult {
+  calories: number
+  met: number
+  durationMin: number
+}
+
+/**
+ * Calculate Calories Burned by Activity
+ * Based on MET values from Ainsworth 2011 compendium
+ */
+export function useCaloriesBurned() {
+  const ACTIVITIES = [
+    { id: 'walking-slow', name: 'Walking (3.5 mph)', met: 4.3 },
+    { id: 'walking-brisk', name: 'Walking (4.0 mph, brisk)', met: 5.0 },
+    { id: 'running-5', name: 'Running (5 mph / 12 min mile)', met: 8.3 },
+    { id: 'running-6', name: 'Running (6 mph / 10 min mile)', met: 9.8 },
+    { id: 'running-7', name: 'Running (7 mph / 8.5 min mile)', met: 11.0 },
+    { id: 'running-8', name: 'Running (8 mph / 7.5 min mile)', met: 11.8 },
+    { id: 'cycling-moderate', name: 'Cycling (12-14 mph)', met: 8.0 },
+    { id: 'cycling-vigorous', name: 'Cycling (14-16 mph)', met: 10.0 },
+    { id: 'swimming-moderate', name: 'Swimming (moderate)', met: 5.8 },
+    { id: 'swimming-vigorous', name: 'Swimming (vigorous)', met: 9.8 },
+    { id: 'weights-moderate', name: 'Weight Training (moderate)', met: 3.5 },
+    { id: 'weights-vigorous', name: 'Weight Training (vigorous)', met: 6.0 },
+    { id: 'hiit', name: 'HIIT', met: 10.0 },
+    { id: 'yoga', name: 'Yoga', met: 3.0 },
+    { id: 'jump-rope', name: 'Jump Rope', met: 11.5 },
+  ]
+
+  const calculate = (input: CaloriesBurnedInput): CaloriesBurnedResult => {
+    validateRange(input.weight, 20, 500, 'Weight')
+    validateRange(input.durationMin, 1, 600, 'Duration')
+    validateRange(input.activityMet, 0.5, 20, 'MET value')
+
+    return {
+      calories: Math.round(input.activityMet * input.weight * (input.durationMin / 60)),
+      met: input.activityMet,
+      durationMin: input.durationMin,
+    }
+  }
+
+  return { calculate, activities: ACTIVITIES }
+}
