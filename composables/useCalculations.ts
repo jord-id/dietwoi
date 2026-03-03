@@ -1743,10 +1743,12 @@ export function useChildGrowth() {
     for (let i = 0; i < table.length - 1; i++) {
       if (ageMonths >= table[i].months && ageMonths <= table[i + 1].months) {
         const ratio = (ageMonths - table[i].months) / (table[i + 1].months - table[i].months)
-        return (table[i] as any)[key] + ratio * ((table[i + 1] as any)[key] - (table[i] as any)[key])
+        const v0 = table[i][key] ?? 0
+        const v1 = table[i + 1][key] ?? 0
+        return v0 + ratio * (v1 - v0)
       }
     }
-    return (table[table.length - 1] as any)[key]
+    return table[table.length - 1][key] ?? 0
   }
 
   const getPercentileEstimate = (value: number, median: number): string => {

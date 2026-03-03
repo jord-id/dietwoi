@@ -36,7 +36,7 @@ const config: CalculatorConfig = {
 const { calculate } = usePregnancyWeight()
 
 // Use useCalculatorSetup for the sliders, manage twins toggle separately
-const { inputs, result, error, num } = useCalculatorSetup<PregnancyWeightResult>(
+const { inputs, result, error } = useCalculatorSetup<PregnancyWeightResult>(
   config,
   (i) => calculate({
     prePregnancyWeight: Number(i.prePregnancyWeight),

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Vo2MaxResult, Vo2TestType } from '~/composables/useCalculations'
+import type { Vo2MaxInput, Vo2MaxResult, Vo2TestType } from '~/composables/useCalculations'
 import type { CalculatorConfig } from '~/types/calculator'
 
 const config: CalculatorConfig = {
@@ -49,7 +49,7 @@ const TEST_TYPES: { value: Vo2TestType; label: string; description: string }[] =
 
 const result = computed<Vo2MaxResult | null>(() => {
   try {
-    const input: any = {
+    const input: Vo2MaxInput = {
       testType: testType.value,
       age: age.value,
       gender: gender.value,

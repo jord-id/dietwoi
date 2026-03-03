@@ -91,13 +91,13 @@ const weightStatus = computed(() => {
       <div>
         <CalculatorInputSlider
           :model-value="Number(inputs.currentWeight)"
-          @update:model-value="inputs.currentWeight = $event"
           :min="0"
           :max="200"
           :step="0.1"
           label="Current Weight (Optional)"
           unit="kg"
           color="amber"
+          @update:model-value="inputs.currentWeight = $event"
         />
         <p class="text-xs text-gray-500 mt-1">Enter your current weight to see comparison</p>
       </div>

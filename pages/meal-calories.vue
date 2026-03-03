@@ -80,7 +80,6 @@ const patternLabel = computed(() => {
 })
 
 // Colors for meal cards
-const mealColors = ['amber', 'orange', 'red', 'emerald', 'sky']
 const getMealBorder = (index: number) => {
   const colors = ['border-amber-200', 'border-orange-200', 'border-red-200', 'border-emerald-200', 'border-sky-200']
   return colors[index % colors.length]

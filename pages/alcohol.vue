@@ -32,7 +32,7 @@ const config: CalculatorConfig = {
   ],
 }
 
-const { calculate, systems } = useAlcohol()
+const { calculate } = useAlcohol()
 
 const inputs = ref<Record<string, number | string>>({
   volumeMl: 330,
