@@ -90,7 +90,8 @@ const weightStatus = computed(() => {
       <!-- Optional current weight input -->
       <div>
         <CalculatorInputSlider
-          v-model="inputs.currentWeight"
+          :model-value="Number(inputs.currentWeight)"
+          @update:model-value="inputs.currentWeight = $event"
           :min="0"
           :max="200"
           :step="0.1"

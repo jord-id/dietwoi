@@ -173,7 +173,7 @@ const colorMap: Record<string, { bg: string; text: string; border: string }> = {
 				<div class="p-3 sm:p-5 bg-gray-50 border-t-2 border-orange-500">
 					<div
 						class="font-pixel text-lg sm:text-2xl text-gray-800 mb-0.5 sm:mb-1">
-						10+
+						30+
 					</div>
 					<div class="font-retro text-[9px] sm:text-xs text-gray-500">
 						CALCULATORS
