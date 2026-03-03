@@ -35,13 +35,13 @@ const config: CalculatorConfig = {
 // Calculator
 const { calculate } = useWaterIntake()
 
-const inputs = ref<Record<string, number | string | boolean>>({
+const inputs = ref<Record<string, number | string | Record<string, string>>>({
   weight: 70,
   activityLevel: 'moderate',
   climate: 'normal',
-  highProtein: false,
-  pregnant: false,
-  breastfeeding: false,
+  highProtein: 0,
+  pregnant: 0,
+  breastfeeding: 0,
 })
 
 // Type-safe accessors (centralized type narrowing)

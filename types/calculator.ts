@@ -3,12 +3,16 @@ export type CalculatorColor = 'purple' | 'orange' | 'blue' | 'teal' | 'pink' | '
 export interface CalculatorInput {
   key: string
   label: string
-  type: 'slider' | 'gender' | 'activity'
+  type: 'slider' | 'gender' | 'activity' | 'dropdown' | 'time' | 'distance' | 'checklist'
   min?: number
   max?: number
   step?: number
-  default: number | string
+  default: number | string | Record<string, string>
   unit?: string
+  options?: { value: string; label: string; description?: string; points?: number }[]
+  items?: { key: string; label: string; description?: string; options: { value: string; label: string; points?: number }[] }[]
+  showHours?: boolean
+  units?: string[]
 }
 
 export interface CalculatorMeta {

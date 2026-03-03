@@ -38,7 +38,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 // Define model for each input
-const inputs = defineModel<Record<string, number | string>>("inputs", {
+const inputs = defineModel<Record<string, number | string | Record<string, string>>>("inputs", {
 	required: true,
 });
 
@@ -124,7 +124,7 @@ const accents = computed(() => colorAccents[props.config.meta.color]);
 				:class="accents.text.replace('text-', 'border-')" />
 		</div>
 
-		<div class="relative max-w-6xl mx-auto px-4 py-12 sm:py-16">
+		<div class="relative max-w-6xl mx-auto px-4 pb-12 pt-24 sm:pb-16 sm:pt-28">
 			<!-- Header Section -->
 			<div class="text-center mb-12">
 				<!-- Badge -->
@@ -207,6 +207,39 @@ const accents = computed(() => colorAccents[props.config.meta.color]);
 									:step="input.step ?? 1"
 									:label="input.label"
 									:unit="input.unit ?? ''"
+									:color="config.meta.color" />
+
+								<!-- Dropdown Selector -->
+								<CalculatorDropdownSelector
+									v-else-if="input.type === 'dropdown'"
+									v-model="inputs[input.key] as string"
+									:options="input.options ?? []"
+									:label="input.label"
+									:color="config.meta.color" />
+
+								<!-- Time Input -->
+								<CalculatorTimeInput
+									v-else-if="input.type === 'time'"
+									v-model="inputs[input.key] as number"
+									:show-hours="input.showHours ?? true"
+									:label="input.label"
+									:color="config.meta.color" />
+
+								<!-- Distance Input -->
+								<CalculatorDistanceInput
+									v-else-if="input.type === 'distance'"
+									v-model="inputs[input.key] as number"
+									:units="input.units ?? ['km', 'miles']"
+									:min="input.min ?? 0"
+									:max="input.max ?? 1000"
+									:label="input.label"
+									:color="config.meta.color" />
+
+								<!-- Checklist Input -->
+								<CalculatorChecklistInput
+									v-else-if="input.type === 'checklist'"
+									v-model="inputs[input.key] as Record<string, string>"
+									:items="input.items ?? []"
 									:color="config.meta.color" />
 							</template>
 

@@ -27,10 +27,10 @@ import { CalculationError } from '~/composables/useCalculations'
  */
 export function useCalculatorSetup<TResult>(
   config: CalculatorConfig,
-  calculateFn: (inputs: Record<string, number | string>) => TResult
+  calculateFn: (inputs: Record<string, number | string | Record<string, string>>) => TResult
 ) {
   // Initialize inputs from config defaults
-  const inputs = ref<Record<string, number | string>>(
+  const inputs = ref<Record<string, number | string | Record<string, string>>>(
     Object.fromEntries(
       config.inputs.map((input) => [input.key, input.default])
     )
